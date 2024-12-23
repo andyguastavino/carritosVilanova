@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Detalles del Turno</h1>
+  <dl>
+    <dt>Nombre:</dt>
+    <dd>{{ object.nombre }}</dd>
+
+    <dt>Día de la Semana:</dt>
+    <dd>{{ object.dia_semana.nombre }}</dd>
+
+    <dt>Franja Horaria:</dt>
+    <dd>{{ object.franja_horaria.hora_inicio }} - {{ object.franja_horaria.hora_fin }}</dd>
+  </dl>
+
+  <a href="{% url 'turno_list' %}">Volver a la lista de turnos</a>
+  <a href="{% url 'turno_update' object.pk %}">Editar</a>
+  <a href="{% url 'turno_confirm_delete' object.pk %}">Eliminar</a>
+{% endblock %}

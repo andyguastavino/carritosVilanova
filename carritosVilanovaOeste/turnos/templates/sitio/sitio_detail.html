@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Detalles del Sitio</h1>
+  <dl>
+    <dt>Nombre:</dt>
+    <dd>{{ object.nombre }}</dd>
+
+    <dt>Ubicación:</dt>
+    <dd>{{ object.ubicacion }}</dd>
+  </dl>
+
+  <a href="{% url 'sitio_list' %}">Volver a la lista de sitios</a>
+  <a href="{% url 'sitio_update' object.pk %}">Editar</a>
+  <a href="{% url 'sitio_confirm_delete' object.pk %}">Eliminar</a>
+{% endblock %}

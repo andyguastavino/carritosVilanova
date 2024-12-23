@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Confirmar eliminación de la Disponibilidad</h1>
+  <p>¿Estás seguro de que deseas eliminar la disponibilidad con los siguientes detalles?</p>
+
+  <dl>
+    <dt>Persona:</dt>
+    <dd>{{ object.persona.nombre }}</dd>
+
+    <dt>Turno:</dt>
+    <dd>{{ object.turno.nombre }}</dd>
+
+    <dt>Sitio:</dt>
+    <dd>{{ object.sitio.nombre }}</dd>
+  </dl>
+
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Confirmar Eliminación</button>
+  </form>
+
+  <a href="{% url 'disponibilidad_list' %}">Cancelar</a>
+{% endblock %}

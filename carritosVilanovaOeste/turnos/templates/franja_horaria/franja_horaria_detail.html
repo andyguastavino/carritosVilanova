@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Detalles de la Franja Horaria</h1>
+  <dl>
+    <dt>Hora de Inicio:</dt>
+    <dd>{{ object.hora_inicio }}</dd>
+
+    <dt>Hora de Fin:</dt>
+    <dd>{{ object.hora_fin }}</dd>
+  </dl>
+
+  <a href="{% url 'franja_horaria_list' %}">Volver a la lista de franjas horarias</a>
+  <a href="{% url 'franja_horaria_update' object.pk %}">Editar</a>
+  <a href="{% url 'franja_horaria_confirm_delete' object.pk %}">Eliminar</a>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Detalles del Día de la Semana</h1>
+  <dl>
+    <dt>Nombre:</dt>
+    <dd>{{ object.nombre }}</dd>
+  </dl>
+
+  <a href="{% url 'dia_semana_list' %}">Volver a la lista de días de la semana</a>
+  <a href="{% url 'dia_semana_update' object.pk %}">Editar</a>
+  <a href="{% url 'dia_semana_confirm_delete' object.pk %}">Eliminar</a>
+{% endblock %}

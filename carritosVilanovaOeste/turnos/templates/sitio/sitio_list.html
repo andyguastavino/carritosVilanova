@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Lista de Sitios</h1>
+<ul>
+    {% for sitio in sitios %}
+        <li>{{ sitio.nombre }}</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'sitio_create' %}" class="btn btn-primary">Agregar Sitio</a>
+{% endblock %}

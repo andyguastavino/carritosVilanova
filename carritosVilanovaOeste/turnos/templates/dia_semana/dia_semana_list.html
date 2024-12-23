@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Lista de Días de la Semana</h1>
+<ul>
+    {% for dia in dias %}
+        <li>
+            {{ dia.nombre }} 
+            {% if dia.es_finde %}(Fin de Semana){% endif %}
+        </li>
+    {% endfor %}
+</ul>
+<a href="{% url 'dia_semana_create' %}" class="btn btn-primary">Agregar Día</a>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Confirmar eliminación de la Franja Horaria</h1>
+  <p>¿Estás seguro de que deseas eliminar la franja horaria con los siguientes detalles?</p>
+
+  <dl>
+    <dt>Hora de Inicio:</dt>
+    <dd>{{ object.hora_inicio }}</dd>
+
+    <dt>Hora de Fin:</dt>
+    <dd>{{ object.hora_fin }}</dd>
+  </dl>
+
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Confirmar Eliminación</button>
+  </form>
+
+  <a href="{% url 'franja_horaria_list' %}">Cancelar</a>
+{% endblock %}

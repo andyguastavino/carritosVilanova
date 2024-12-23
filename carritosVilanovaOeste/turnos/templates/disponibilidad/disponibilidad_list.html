@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Lista de Disponibilidades</h1>
+  <ul>
+    {% for disponibilidad in disponibilidades %}
+      <li>
+        Persona: {{ disponibilidad.persona.nombre }} 
+        - Turno: {{ disponibilidad.turno.nombre }} 
+        - Sitio: {{ disponibilidad.sitio.nombre }}
+      </li>
+    {% empty %}
+      <p>No hay disponibilidades disponibles.</p>
+    {% endfor %}
+  </ul>
+  <a href="{% url 'disponibilidad_create' %}">Añadir Nueva Disponibilidad</a>
+{% endblock %}

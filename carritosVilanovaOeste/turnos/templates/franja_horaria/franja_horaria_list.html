@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Lista de Franjas Horarias</h1>
+<ul>
+    {% for franja in franjas %}
+        <li>{{ franja.nombre }}</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'franja_horaria_create' %}" class="btn btn-primary">Agregar Franja Horaria</a>
+{% endblock %}

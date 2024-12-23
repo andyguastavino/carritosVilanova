@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Lista de Responsabilidades</h1>
+<ul>
+    {% for responsabilidad in responsabilidades %}
+        <li>
+            <a href="{% url 'responsabilidad_detail' responsabilidad.id %}">
+                {{ responsabilidad.nombre }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+<a href="{% url 'responsabilidad_create' %}" class="btn btn-primary">Nueva Responsabilidad</a>
+{% endblock %}

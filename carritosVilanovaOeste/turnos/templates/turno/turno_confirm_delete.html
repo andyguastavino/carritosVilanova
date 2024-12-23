@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Confirmar eliminación del Turno</h1>
+  <p>¿Estás seguro de que deseas eliminar el turno con los siguientes detalles?</p>
+
+  <dl>
+    <dt>Nombre:</dt>
+    <dd>{{ object.nombre }}</dd>
+
+    <dt>Día de la Semana:</dt>
+    <dd>{{ object.dia_semana.nombre }}</dd>
+
+    <dt>Franja Horaria:</dt>
+    <dd>{{ object.franja_horaria.hora_inicio }} - {{ object.franja_horaria.hora_fin }}</dd>
+  </dl>
+
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Confirmar Eliminación</button>
+  </form>
+
+  <a href="{% url 'turno_list' %}">Cancelar</a>
+{% endblock %}

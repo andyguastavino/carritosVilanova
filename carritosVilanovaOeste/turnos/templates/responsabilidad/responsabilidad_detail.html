@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Detalle de Responsabilidad</h1>
+<p><strong>Nombre:</strong> {{ object.nombre }}</p>
+<a href="{% url 'responsabilidad_update' object.id %}" class="btn btn-warning">Editar</a>
+<a href="{% url 'responsabilidad_delete' object.id %}" class="btn btn-danger">Eliminar</a>
+<a href="{% url 'responsabilidad_list' %}" class="btn btn-secondary">Volver</a>
+{% endblock %}

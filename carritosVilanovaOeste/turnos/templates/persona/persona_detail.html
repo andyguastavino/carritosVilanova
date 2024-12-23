@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Detalle de Persona</h1>
+<p><strong>Nombre:</strong> {{ object.nombre }}</p>
+<p><strong>Email:</strong> {{ object.email }}</p>
+<p><strong>Teléfono:</strong> {{ object.telefono }}</p>
+<p><strong>Capitán:</strong> {{ object.es_capitan|yesno:"Sí,No" }}</p>
+<p><strong>Responsabilidades:</strong></p>
+<ul>
+    {% for responsabilidad in object.responsabilidades.all %}
+        <li>{{ responsabilidad.nombre }}</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'persona_update' object.id %}" class="btn btn-warning">Editar</a>
+<a href="{% url 'persona_delete' object.id %}" class="btn btn-danger">Eliminar</a>
+<a href="{% url 'persona_list' %}" class="btn btn-secondary">Volver</a>
+{% endblock %}

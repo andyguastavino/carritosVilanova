@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Lista de Turnos</h1>
+  
+  {% if turnos %}
+    <table>
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Turno</th>
+          <th>Día</th>
+          <th>Franja Horaria</th>
+          <th>Sitio</th>
+          <th>Capitán</th>
+          <th>Asistentes</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for turno in turnos %}
+          <tr>
+            <td>{{ turno.fecha|date:"d/m/Y" }}</td> <!-- Mostrar la fecha en formato dd/mm/aaaa -->
+            <td><a href="{% url 'turno_detail' turno.pk %}">{{ turno }}</a></td>
+            <td>{{ turno.dia_semana.nombre }}</td>
+            <td>{{ turno.franja_horaria.hora_inicio }} - {{ turno.franja_horaria.hora_fin }}</td>
+            <td>{{ turno.sitio.nombre }}</td> <!-- Suponiendo que 'Sitio' tiene un campo 'nombre' -->
+            <td>{{ turno.capitan|default:"No asignado" }}</td> <!-- Muestra 'No asignado' si no hay capitán -->
+            <td>
+              {% if turno.asistentes.all %}
+                <ul>
+                  {% for asistente in turno.asistentes.all %}
+                    <li>{{ asistente.nombre }}</li> <!-- Asumiendo que 'Persona' tiene el campo 'nombre' -->
+                  {% endfor %}
+                </ul>
+              {% else %}
+                No hay asistentes
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No hay turnos disponibles.</p>
+  {% endif %}
+  
+  <a href="{% url 'turno_create' %}">Añadir Nuevo Turno</a>
+{% endblock %}
