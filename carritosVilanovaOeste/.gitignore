@@ -1,0 +1,26 @@
+# Ignorar bases de datos SQLite
+*.sqlite3
+
+# Ignorar todos los archivos compilados de Python
+__pycache__/
+*.pyc
+
+# Ignorar archivos de migraciones compiladas de Django
+migrations/__pycache__/
+*.pyc
+
+# Opcional: Ignorar todas las migraciones (excepto las necesarias)
+# Si quieres ignorar todas las migraciones, descomenta esta línea
+# migrations/
+
+# Ignorar configuraciones de IDE y entornos virtuales
+.vscode/
+.idea/
+*.env
+*.venv
+# Ignorar archivos de migraciones compiladas de Django
+migrations/__pycache__/
+*.pyc
+
+# Opcional: Ignorar todas las migraciones
+migrations/

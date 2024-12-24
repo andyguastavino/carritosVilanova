@@ -3,6 +3,10 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Responsabilidad, Persona, DiaSemana, FranjaHoraria, Sitio, Turno, Disponibilidad
 
+from django.db.models import Q
+import calendar
+from datetime import datetime
+
 # CRUD para Responsabilidad
 class ResponsabilidadListView(ListView):
     model = Responsabilidad
@@ -139,10 +143,27 @@ class SitioDeleteView(DeleteView):
     success_url = reverse_lazy('sitio_list')
 
 # CRUD para Turno
+from collections import defaultdict
 class TurnoListView(ListView):
     model = Turno
     template_name = 'turno/turno_list.html'
     context_object_name = 'turnos'
+    ordering = ['semana_del_mes']
+    
+    def get_context_data(self, **kwargs):
+        # Obtén el contexto original
+        context = super().get_context_data(**kwargs)
+
+        # Agrupa los turnos por semana del mes
+        turnos = context['turnos']
+        turnos_por_semana = defaultdict(list)
+
+        for turno in turnos:
+            turnos_por_semana[turno.semana_del_mes].append(turno)
+
+        # Pasa el diccionario agrupado al contexto
+        context['turnos_por_semana'] = dict(turnos_por_semana)
+        return context
 
 class TurnoDetailView(DetailView):
     model = Turno
