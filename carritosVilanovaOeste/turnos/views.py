@@ -144,26 +144,12 @@ class SitioDeleteView(DeleteView):
 
 # CRUD para Turno
 from collections import defaultdict
+
 class TurnoListView(ListView):
     model = Turno
     template_name = 'turno/turno_list.html'
     context_object_name = 'turnos'
-    ordering = ['semana_del_mes']
-    
-    def get_context_data(self, **kwargs):
-        # Obtén el contexto original
-        context = super().get_context_data(**kwargs)
 
-        # Agrupa los turnos por semana del mes
-        turnos = context['turnos']
-        turnos_por_semana = defaultdict(list)
-
-        for turno in turnos:
-            turnos_por_semana[turno.semana_del_mes].append(turno)
-
-        # Pasa el diccionario agrupado al contexto
-        context['turnos_por_semana'] = dict(turnos_por_semana)
-        return context
 
 class TurnoDetailView(DetailView):
     model = Turno
@@ -212,3 +198,9 @@ class DisponibilidadDeleteView(DeleteView):
     model = Disponibilidad
     template_name = 'disponibilidad/disponibilidad_confirm_delete.html'
     success_url = reverse_lazy('disponibilidad_list')
+
+class DibujarCalendario(ListView):
+    model = Turno
+    template_name = 'turno/turno_list.html'
+    context_object_name = 'turnos'
+    

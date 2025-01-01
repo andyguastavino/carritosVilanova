@@ -6,7 +6,8 @@ from .views import (
     FranjaHorariaListView, FranjaHorariaDetailView, FranjaHorariaCreateView, FranjaHorariaUpdateView, FranjaHorariaDeleteView,
     SitioListView, SitioDetailView, SitioCreateView, SitioUpdateView, SitioDeleteView,
     TurnoListView, TurnoDetailView, TurnoCreateView, TurnoUpdateView, TurnoDeleteView,
-    DisponibilidadListView, DisponibilidadDetailView, DisponibilidadCreateView, DisponibilidadUpdateView, DisponibilidadDeleteView
+    DisponibilidadListView, DisponibilidadDetailView, DisponibilidadCreateView, DisponibilidadUpdateView, DisponibilidadDeleteView,
+    DibujarCalendario
 )
 
 urlpatterns = [
@@ -58,4 +59,7 @@ urlpatterns = [
     path('disponibilidades/nueva/', DisponibilidadCreateView.as_view(), name='disponibilidad_create'),
     path('disponibilidades/<int:pk>/editar/', DisponibilidadUpdateView.as_view(), name='disponibilidad_update'),
     path('disponibilidades/<int:pk>/eliminar/', DisponibilidadDeleteView.as_view(), name='disponibilidad_delete'),
+    
+    #Ruta para dibujar calendario
+    path('calendario/', DibujarCalendario.as_view(), name='calendario'),
 ]

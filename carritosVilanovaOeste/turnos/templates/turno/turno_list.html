@@ -1,60 +1,50 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>Lista de Turnos</h1>
-  
-  {% if turnos %}
-  {% for semana, turnos in turnos_por_semana.items %}
-  <h3>Semana {{ semana }}</h3>
-  <table>
-    <thead>
-      <tr>
-        <th>Fecha</th>
-        <th>Turno</th>
-        <th>Día de la semana</th>
-        <th>Semana del mes</th>
-        <th>Franja horaria</th>
-        <th>Sitio</th>
-        <th>Asistentes</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for turno in turnos %}
-        <tr>
-          <td>{{ turno.fecha|date:"d/m/Y" }}</td>
-          <td><a href="{% url 'turno_detail' turno.pk %}">{{ turno }}</a></td>
-          <td>{{ turno.dia_semana.nombre }}</td>
-          <td>{{ turno.semana_del_mes }}</td>
-          <td>{{ turno.franja_horaria }} - {{ turno.franja_horaria.hora_fin }}</td>
-          <td>{{ turno.sitio.nombre }}</td>
-          <td>
-            {% if turno.capitan %}
-              <ul>
-                  <li>CAPITAN: {{ turno.capitan }}</li>
-
-              </ul>
-            {% else %}
-              No hay capitan
-            {% endif %}
-            {% if turno.asistentes.all %}
-              <ul>
-                {% for asistente in turno.asistentes.all %}
-                  <li>{{ asistente.nombre }}</li>
-                {% endfor %}
-              </ul>
-            {% else %}
-              No hay asistentes
-            {% endif %}
-          </td>
-        </tr>
-      {% endfor %}
-    </tbody>
+<div class="container mt-5">
+  <h1 class="mb-4">Listado de Turnos</h1>
+  <table class="table table-bordered table-striped">
+      <thead class="table-dark">
+          <tr>
+              <th>#</th>
+              <th>Fecha</th>
+              <th>Día de la Semana</th>
+              <th>Franja Horaria</th>
+              <th>Sitio</th>
+              <th>Capitán</th>
+              <th>Asistentes</th>
+              <th>Activo</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for turno in turnos %}
+          <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ turno.fecha|date:"d/m/Y" }}</td>
+              <td>{{ turno.dia_semana }}</td>
+              <td>{{ turno.franja_horaria }}</td>
+              <td>{{ turno.sitio }}</td>
+              <td>{{ turno.capitan }}</td>
+              <td>
+                  {% if turno.asistentes.exists %}
+                      <ul>
+                          {% for asistente in turno.asistentes.all %}
+                              <li>{{ asistente }}</li>
+                          {% endfor %}
+                      </ul>
+                  {% else %}
+                      <span>No hay asistentes</span>
+                  {% endif %}
+              </td>
+              <td>{{ turno.activo|yesno:"Sí,No" }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+              <td colspan="8" class="text-center">No hay turnos disponibles.</td>
+          </tr>
+          {% endfor %}
+      </tbody>
   </table>
-{% endfor %}
-
-  {% else %}
-    <p>No hay turnos disponibles.</p>
-  {% endif %}
-  
   <a href="{% url 'turno_create' %}">Añadir Nuevo Turno</a>
+</div> 
 {% endblock %}
