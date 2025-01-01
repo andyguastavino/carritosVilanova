@@ -203,4 +203,7 @@ class DibujarCalendario(ListView):
     model = Turno
     template_name = 'turno/turno_list.html'
     context_object_name = 'turnos'
+
+def horario_view(request):
+    return render(request, 'calendario/calendario.html')
     

@@ -7,7 +7,7 @@ from .views import (
     SitioListView, SitioDetailView, SitioCreateView, SitioUpdateView, SitioDeleteView,
     TurnoListView, TurnoDetailView, TurnoCreateView, TurnoUpdateView, TurnoDeleteView,
     DisponibilidadListView, DisponibilidadDetailView, DisponibilidadCreateView, DisponibilidadUpdateView, DisponibilidadDeleteView,
-    DibujarCalendario
+    DibujarCalendario, horario_view
 )
 
 urlpatterns = [
@@ -62,4 +62,5 @@ urlpatterns = [
     
     #Ruta para dibujar calendario
     path('calendario/', DibujarCalendario.as_view(), name='calendario'),
+    path('horario/', horario_view, name='horario'),
 ]

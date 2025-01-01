@@ -1,0 +1,470 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid black;
+            text-align: center;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .site {
+            background-color: #e8f5e9; /* Verde claro */
+        }
+        .time-slot {
+            background-color: #e3f2fd; /* Azul claro */
+        }
+        h2 {
+            text-align: center;
+            margin-top: 40px;
+        }
+    </style>
+    <h1>Horarios Semanales - Enero 2025</h1>
+
+    <!-- Generar tablas para cada semana -->
+    <div>
+        <!-- Semana del 6 al 12 de enero -->
+        <h2>Semana del 6 al 12 de enero</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th rowspan="2">Sitio</th>
+                    <th rowspan="2">Franja Horaria</th>
+                    <th>Lunes</th>
+                    <th>Martes</th>
+                    <th>Miércoles</th>
+                    <th>Jueves</th>
+                    <th>Viernes</th>
+                    <th>Sabado</th>
+                    <th>Domingo</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Arcos - Mañana -->
+                <tr class="site">
+                    <td rowspan="2">ARCOS</td>
+                    <td class="time-slot">Mañana</td>
+                    <td>Ramón Balague<br>Juana Siles<br>Loli Luna</td>
+                    <td>José Franco<br>María de Franco<br>Carmen Torres</td>
+                    <td>Kevin Dunnings<br>Emily Dunnings<br>Marisol Trasante</td>
+                    <td>Manuel Villa<br>Antonia Escudero<br>Marisol de Trasante</td>
+                    <td>Richard Vilches<br>Paola de Vilches<br>Nury de Gutiérrez</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <!-- Arcos - Tarde -->
+                <tr class="site">
+                    <td class="time-slot">Tarde</td>
+                    <td>Rubén Vilas<br>Tatiana de Loaiza<br>Belén García</td>
+                    <td>Luis David<br>Julieta Trasante<br>Pili de Pasco</td>
+                    <td>Carlos Gutiérrez<br>Gabriel García<br>Norma de García</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <!-- Piscina - Mañana -->
+                <tr class="site">
+                    <td rowspan="2">PISCINA</td>
+                    <td class="time-slot">Mañana</td>
+                    <td>Javier Loaizia<br>Isabel Sellán<br>Aurelia de Jorge</td>
+                    <td>Isidro Téllez<br>Pilar de Téllez<br>Enza de Mingo</td>
+                    <td>Alberto Torres<br>Pepi de Torres<br>Maria Luisa Ramos</td>
+                    <td>Mirko Pomentale<br>Dalia Pleguezuelos<br>Isabel Sellán</td>
+                    <td>Ramón Balagué<br>Iru de Morales<br>Belén García</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <!-- Piscina - Tarde -->
+                <tr class="site">
+                    <td class="time-slot">Tarde</td>
+                    <td>Carlos Gutiérrez<br>Nury de Gutiérrez<br>Manoli de Balagué</td>
+                    <td>Javier Coitin<br>Olga de Vilas<br>Iru de Morales</td>
+                    <td>Matías Trasante<br>Juani de Vilas<br>Mercedez Fernández</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="site">
+                    <td rowspan="2">ZAMENHOF</td>
+                    <td class="time-slot">Mañana</td>
+                    <td>Javier Loaizia<br>Isabel Sellán<br>Aurelia de Jorge</td>
+                    <td>Isidro Téllez<br>Pilar de Téllez<br>Enza de Mingo</td>
+                    <td>Alberto Torres<br>Pepi de Torres<br>Maria Luisa Ramos</td>
+                    <td>Mirko Pomentale<br>Dalia Pleguezuelos<br>Isabel Sellán</td>
+                    <td>Ramón Balagué<br>Iru de Morales<br>Belén García</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="site">
+                    <td class="time-slot">Mediodia</td>
+                    <td>Carlos Gutiérrez<br>Nury de Gutiérrez<br>Manoli de Balagué</td>
+                    <td>Javier Coitin<br>Olga de Vilas<br>Iru de Morales</td>
+                    <td>Matías Trasante<br>Juani de Vilas<br>Mercedez Fernández</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="site">
+                    <td rowspan="2">PLAYA</td>
+                    <td class="time-slot">Mañana</td>
+                    <td>Javier Loaizia<br>Isabel Sellán<br>Aurelia de Jorge</td>
+                    <td>Isidro Téllez<br>Pilar de Téllez<br>Enza de Mingo</td>
+                    <td>Alberto Torres<br>Pepi de Torres<br>Maria Luisa Ramos</td>
+                    <td>Mirko Pomentale<br>Dalia Pleguezuelos<br>Isabel Sellán</td>
+                    <td>Ramón Balagué<br>Iru de Morales<br>Belén García</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="site">
+                    <td class="time-slot">Mediodia</td>
+                    <td>Carlos Gutiérrez<br>Nury de Gutiérrez<br>Manoli de Balagué</td>
+                    <td>Javier Coitin<br>Olga de Vilas<br>Iru de Morales</td>
+                    <td>Matías Trasante<br>Juani de Vilas<br>Mercedez Fernández</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Semana del 13 al 19 de enero -->
+        <h2>Semana del 13 al 19 de enero</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th rowspan="2">Sitio</th>
+                    <th rowspan="2">Franja Horaria</th>
+                    <th>Lunes</th>
+                    <th>Martes</th>
+                    <th>Miércoles</th>
+                    <th>Jueves</th>
+                    <th>Viernes</th>
+                    <th>Sabado</th>
+                    <th>Domingo</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Arcos - Mañana -->
+                <tr class="site">
+                    <td rowspan="2">ARCOS</td>
+                    <td class="time-slot">Mañana</td>
+                    <td>Ramón Balague<br>Juana Siles<br>Loli Luna</td>
+                    <td>José Franco<br>María de Franco<br>Carmen Torres</td>
+                    <td>Kevin Dunnings<br>Emily Dunnings<br>Marisol Trasante</td>
+                    <td>Manuel Villa<br>Antonia Escudero<br>Marisol de Trasante</td>
+                    <td>Richard Vilches<br>Paola de Vilches<br>Nury de Gutiérrez</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <!-- Arcos - Tarde -->
+                <tr class="site">
+                    <td class="time-slot">Tarde</td>
+                    <td>Rubén Vilas<br>Tatiana de Loaiza<br>Belén García</td>
+                    <td>Luis David<br>Julieta Trasante<br>Pili de Pasco</td>
+                    <td>Carlos Gutiérrez<br>Gabriel García<br>Norma de García</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <!-- Piscina - Mañana -->
+                <tr class="site">
+                    <td rowspan="2">PISCINA</td>
+                    <td class="time-slot">Mañana</td>
+                    <td>Javier Loaizia<br>Isabel Sellán<br>Aurelia de Jorge</td>
+                    <td>Isidro Téllez<br>Pilar de Téllez<br>Enza de Mingo</td>
+                    <td>Alberto Torres<br>Pepi de Torres<br>Maria Luisa Ramos</td>
+                    <td>Mirko Pomentale<br>Dalia Pleguezuelos<br>Isabel Sellán</td>
+                    <td>Ramón Balagué<br>Iru de Morales<br>Belén García</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <!-- Piscina - Tarde -->
+                <tr class="site">
+                    <td class="time-slot">Tarde</td>
+                    <td>Carlos Gutiérrez<br>Nury de Gutiérrez<br>Manoli de Balagué</td>
+                    <td>Javier Coitin<br>Olga de Vilas<br>Iru de Morales</td>
+                    <td>Matías Trasante<br>Juani de Vilas<br>Mercedez Fernández</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="site">
+                    <td rowspan="2">ZAMENHOF</td>
+                    <td class="time-slot">Mañana</td>
+                    <td>Javier Loaizia<br>Isabel Sellán<br>Aurelia de Jorge</td>
+                    <td>Isidro Téllez<br>Pilar de Téllez<br>Enza de Mingo</td>
+                    <td>Alberto Torres<br>Pepi de Torres<br>Maria Luisa Ramos</td>
+                    <td>Mirko Pomentale<br>Dalia Pleguezuelos<br>Isabel Sellán</td>
+                    <td>Ramón Balagué<br>Iru de Morales<br>Belén García</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="site">
+                    <td class="time-slot">Mediodia</td>
+                    <td>Carlos Gutiérrez<br>Nury de Gutiérrez<br>Manoli de Balagué</td>
+                    <td>Javier Coitin<br>Olga de Vilas<br>Iru de Morales</td>
+                    <td>Matías Trasante<br>Juani de Vilas<br>Mercedez Fernández</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="site">
+                    <td rowspan="2">PLAYA</td>
+                    <td class="time-slot">Mañana</td>
+                    <td>Javier Loaizia<br>Isabel Sellán<br>Aurelia de Jorge</td>
+                    <td>Isidro Téllez<br>Pilar de Téllez<br>Enza de Mingo</td>
+                    <td>Alberto Torres<br>Pepi de Torres<br>Maria Luisa Ramos</td>
+                    <td>Mirko Pomentale<br>Dalia Pleguezuelos<br>Isabel Sellán</td>
+                    <td>Ramón Balagué<br>Iru de Morales<br>Belén García</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="site">
+                    <td class="time-slot">Mediodia</td>
+                    <td>Carlos Gutiérrez<br>Nury de Gutiérrez<br>Manoli de Balagué</td>
+                    <td>Javier Coitin<br>Olga de Vilas<br>Iru de Morales</td>
+                    <td>Matías Trasante<br>Juani de Vilas<br>Mercedez Fernández</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Semana del 20 al 26 de enero -->
+        <h2>Semana del 20 al 26 de enero</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th rowspan="2">Sitio</th>
+                    <th rowspan="2">Franja Horaria</th>
+                    <th>Lunes</th>
+                    <th>Martes</th>
+                    <th>Miércoles</th>
+                    <th>Jueves</th>
+                    <th>Viernes</th>
+                    <th>Sabado</th>
+                    <th>Domingo</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Arcos - Mañana -->
+                <tr class="site">
+                    <td rowspan="2">ARCOS</td>
+                    <td class="time-slot">Mañana</td>
+                    <td>Ramón Balague<br>Juana Siles<br>Loli Luna</td>
+                    <td>José Franco<br>María de Franco<br>Carmen Torres</td>
+                    <td>Kevin Dunnings<br>Emily Dunnings<br>Marisol Trasante</td>
+                    <td>Manuel Villa<br>Antonia Escudero<br>Marisol de Trasante</td>
+                    <td>Richard Vilches<br>Paola de Vilches<br>Nury de Gutiérrez</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <!-- Arcos - Tarde -->
+                <tr class="site">
+                    <td class="time-slot">Tarde</td>
+                    <td>Rubén Vilas<br>Tatiana de Loaiza<br>Belén García</td>
+                    <td>Luis David<br>Julieta Trasante<br>Pili de Pasco</td>
+                    <td>Carlos Gutiérrez<br>Gabriel García<br>Norma de García</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <!-- Piscina - Mañana -->
+                <tr class="site">
+                    <td rowspan="2">PISCINA</td>
+                    <td class="time-slot">Mañana</td>
+                    <td>Javier Loaizia<br>Isabel Sellán<br>Aurelia de Jorge</td>
+                    <td>Isidro Téllez<br>Pilar de Téllez<br>Enza de Mingo</td>
+                    <td>Alberto Torres<br>Pepi de Torres<br>Maria Luisa Ramos</td>
+                    <td>Mirko Pomentale<br>Dalia Pleguezuelos<br>Isabel Sellán</td>
+                    <td>Ramón Balagué<br>Iru de Morales<br>Belén García</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <!-- Piscina - Tarde -->
+                <tr class="site">
+                    <td class="time-slot">Tarde</td>
+                    <td>Carlos Gutiérrez<br>Nury de Gutiérrez<br>Manoli de Balagué</td>
+                    <td>Javier Coitin<br>Olga de Vilas<br>Iru de Morales</td>
+                    <td>Matías Trasante<br>Juani de Vilas<br>Mercedez Fernández</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="site">
+                    <td rowspan="2">ZAMENHOF</td>
+                    <td class="time-slot">Mañana</td>
+                    <td>Javier Loaizia<br>Isabel Sellán<br>Aurelia de Jorge</td>
+                    <td>Isidro Téllez<br>Pilar de Téllez<br>Enza de Mingo</td>
+                    <td>Alberto Torres<br>Pepi de Torres<br>Maria Luisa Ramos</td>
+                    <td>Mirko Pomentale<br>Dalia Pleguezuelos<br>Isabel Sellán</td>
+                    <td>Ramón Balagué<br>Iru de Morales<br>Belén García</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="site">
+                    <td class="time-slot">Mediodia</td>
+                    <td>Carlos Gutiérrez<br>Nury de Gutiérrez<br>Manoli de Balagué</td>
+                    <td>Javier Coitin<br>Olga de Vilas<br>Iru de Morales</td>
+                    <td>Matías Trasante<br>Juani de Vilas<br>Mercedez Fernández</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="site">
+                    <td rowspan="2">PLAYA</td>
+                    <td class="time-slot">Mañana</td>
+                    <td>Javier Loaizia<br>Isabel Sellán<br>Aurelia de Jorge</td>
+                    <td>Isidro Téllez<br>Pilar de Téllez<br>Enza de Mingo</td>
+                    <td>Alberto Torres<br>Pepi de Torres<br>Maria Luisa Ramos</td>
+                    <td>Mirko Pomentale<br>Dalia Pleguezuelos<br>Isabel Sellán</td>
+                    <td>Ramón Balagué<br>Iru de Morales<br>Belén García</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="site">
+                    <td class="time-slot">Mediodia</td>
+                    <td>Carlos Gutiérrez<br>Nury de Gutiérrez<br>Manoli de Balagué</td>
+                    <td>Javier Coitin<br>Olga de Vilas<br>Iru de Morales</td>
+                    <td>Matías Trasante<br>Juani de Vilas<br>Mercedez Fernández</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Semana del 27 de enero al 2 de febrero -->
+        <h2>Semana del 27 de enero al 2 de febrero</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th rowspan="2">Sitio</th>
+                    <th rowspan="2">Franja Horaria</th>
+                    <th>Lunes</th>
+                    <th>Martes</th>
+                    <th>Miércoles</th>
+                    <th>Jueves</th>
+                    <th>Viernes</th>
+                    <th>Sabado</th>
+                    <th>Domingo</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Arcos - Mañana -->
+                <tr class="site">
+                    <td rowspan="2">ARCOS</td>
+                    <td class="time-slot">Mañana</td>
+                    <td>Ramón Balague<br>Juana Siles<br>Loli Luna</td>
+                    <td>José Franco<br>María de Franco<br>Carmen Torres</td>
+                    <td>Kevin Dunnings<br>Emily Dunnings<br>Marisol Trasante</td>
+                    <td>Manuel Villa<br>Antonia Escudero<br>Marisol de Trasante</td>
+                    <td>Richard Vilches<br>Paola de Vilches<br>Nury de Gutiérrez</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <!-- Arcos - Tarde -->
+                <tr class="site">
+                    <td class="time-slot">Tarde</td>
+                    <td>Rubén Vilas<br>Tatiana de Loaiza<br>Belén García</td>
+                    <td>Luis David<br>Julieta Trasante<br>Pili de Pasco</td>
+                    <td>Carlos Gutiérrez<br>Gabriel García<br>Norma de García</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <!-- Piscina - Mañana -->
+                <tr class="site">
+                    <td rowspan="2">PISCINA</td>
+                    <td class="time-slot">Mañana</td>
+                    <td>Javier Loaizia<br>Isabel Sellán<br>Aurelia de Jorge</td>
+                    <td>Isidro Téllez<br>Pilar de Téllez<br>Enza de Mingo</td>
+                    <td>Alberto Torres<br>Pepi de Torres<br>Maria Luisa Ramos</td>
+                    <td>Mirko Pomentale<br>Dalia Pleguezuelos<br>Isabel Sellán</td>
+                    <td>Ramón Balagué<br>Iru de Morales<br>Belén García</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <!-- Piscina - Tarde -->
+                <tr class="site">
+                    <td class="time-slot">Tarde</td>
+                    <td>Carlos Gutiérrez<br>Nury de Gutiérrez<br>Manoli de Balagué</td>
+                    <td>Javier Coitin<br>Olga de Vilas<br>Iru de Morales</td>
+                    <td>Matías Trasante<br>Juani de Vilas<br>Mercedez Fernández</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="site">
+                    <td rowspan="2">ZAMENHOF</td>
+                    <td class="time-slot">Mañana</td>
+                    <td>Javier Loaizia<br>Isabel Sellán<br>Aurelia de Jorge</td>
+                    <td>Isidro Téllez<br>Pilar de Téllez<br>Enza de Mingo</td>
+                    <td>Alberto Torres<br>Pepi de Torres<br>Maria Luisa Ramos</td>
+                    <td>Mirko Pomentale<br>Dalia Pleguezuelos<br>Isabel Sellán</td>
+                    <td>Ramón Balagué<br>Iru de Morales<br>Belén García</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="site">
+                    <td class="time-slot">Mediodia</td>
+                    <td>Carlos Gutiérrez<br>Nury de Gutiérrez<br>Manoli de Balagué</td>
+                    <td>Javier Coitin<br>Olga de Vilas<br>Iru de Morales</td>
+                    <td>Matías Trasante<br>Juani de Vilas<br>Mercedez Fernández</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="site">
+                    <td rowspan="2">PLAYA</td>
+                    <td class="time-slot">Mañana</td>
+                    <td>Javier Loaizia<br>Isabel Sellán<br>Aurelia de Jorge</td>
+                    <td>Isidro Téllez<br>Pilar de Téllez<br>Enza de Mingo</td>
+                    <td>Alberto Torres<br>Pepi de Torres<br>Maria Luisa Ramos</td>
+                    <td>Mirko Pomentale<br>Dalia Pleguezuelos<br>Isabel Sellán</td>
+                    <td>Ramón Balagué<br>Iru de Morales<br>Belén García</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="site">
+                    <td class="time-slot">Mediodia</td>
+                    <td>Carlos Gutiérrez<br>Nury de Gutiérrez<br>Manoli de Balagué</td>
+                    <td>Javier Coitin<br>Olga de Vilas<br>Iru de Morales</td>
+                    <td>Matías Trasante<br>Juani de Vilas<br>Mercedez Fernández</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+{% endblock %}
