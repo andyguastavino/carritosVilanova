@@ -1,0 +1,40 @@
+{% for inicio, fin, sitios in datos_semanales %}
+<h2>Semana del {{ inicio|date:"d M" }} al {{ fin|date:"d M" }}</h2>
+<table>
+    <thead>
+        <tr>
+            <th rowspan="2">Sitio</th>
+            <th rowspan="2">Franja Horaria</th>
+            <th>Lunes</th>
+            <th>Martes</th>
+            <th>Miércoles</th>
+            <th>Jueves</th>
+            <th>Viernes</th>
+            <th>Sábado</th>
+            <th>Domingo</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for sitio, franjas in sitios.items %}
+            {% for franja, dias in franjas.items %}
+                <tr>
+                    {% if forloop.first %}
+                        <td rowspan="{{ franjas|length }}">{{ sitio.nombre }}</td>
+                    {% endif %}
+                    <td>{{ franja.nombre }}</td>
+                    {% for dia in dias.values %}
+                        <td>
+                            {% for turno in dia %}
+                                {{ turno.capitan }}<br>
+                                {% for asistente in turno.asistentes.all %}
+                                    {{ asistente }}<br>
+                                {% endfor %}
+                            {% endfor %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        {% endfor %}
+    </tbody>
+</table>
+{% endfor %}

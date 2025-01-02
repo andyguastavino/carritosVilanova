@@ -206,4 +206,53 @@ class DibujarCalendario(ListView):
 
 def horario_view(request):
     return render(request, 'calendario/calendario.html')
-    
+
+
+from django.shortcuts import render
+from django.db.models import Prefetch
+from datetime import date, timedelta
+from calendar import monthrange
+from .models import Turno, Sitio, FranjaHoraria
+
+def turnos_por_semana(request, year, month):
+    # Obtener el rango de días del mes
+    _, last_day = monthrange(year, month)
+    inicio_mes = date(year, month, 1)
+    fin_mes = date(year, month, last_day)
+
+    # Generar las semanas
+    semanas = []
+    inicio_semana = inicio_mes
+    while inicio_semana <= fin_mes:
+        fin_semana = inicio_semana + timedelta(days=6)
+        semanas.append((inicio_semana, min(fin_semana, fin_mes)))
+        inicio_semana += timedelta(days=7)
+
+    # Obtener todos los turnos del mes
+    turnos = Turno.objects.filter(fecha__range=(inicio_mes, fin_mes)).select_related(
+        'dia_semana', 'franja_horaria', 'sitio', 'capitan'
+    ).prefetch_related(
+        Prefetch('asistentes')
+    )
+
+    # Organizar los turnos por semana, sitio y franja horaria
+    datos_semanales = []
+    for inicio, fin in semanas:
+        turnos_semana = turnos.filter(fecha__range=(inicio, fin))
+        sitios = {}
+        for sitio in Sitio.objects.all():
+            franjas = {}
+            for franja in FranjaHoraria.objects.all():
+                dias = {}
+                for dia in range(7):  # Lunes a Domingo
+                    turnos_dia = turnos_semana.filter(
+                        sitio=sitio,
+                        franja_horaria=franja,
+                        fecha__week_day=dia + 2  # Django: Lunes = 2, Domingo = 1
+                    )
+                    dias[dia] = turnos_dia
+                franjas[franja] = dias
+            sitios[sitio] = franjas
+        datos_semanales.append((inicio, fin, sitios))
+
+    return render(request, 'turno/turnos_por_semana.html', {'datos_semanales': datos_semanales})
