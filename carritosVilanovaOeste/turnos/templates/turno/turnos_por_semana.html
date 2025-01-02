@@ -1,17 +1,29 @@
-{% for inicio, fin, sitios in datos_semanales %}
+{% extends 'base.html' %}
+
+{% block content %}
+{% load custom_filters %}
+
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    th, td {
+        border: 1px solid #000;
+        padding: 5px;
+        text-align: left;
+    }
+</style>
+{% for inicio, fin, dias_semana, sitios in datos_semanales %}
 <h2>Semana del {{ inicio|date:"d M" }} al {{ fin|date:"d M" }}</h2>
 <table>
     <thead>
         <tr>
             <th rowspan="2">Sitio</th>
             <th rowspan="2">Franja Horaria</th>
-            <th>Lunes</th>
-            <th>Martes</th>
-            <th>Miércoles</th>
-            <th>Jueves</th>
-            <th>Viernes</th>
-            <th>Sábado</th>
-            <th>Domingo</th>
+            {% for dia in dias_semana %}
+            <th>{{ dia|date:"l"|dia_semana_es }} {{ dia|date:"d" }}</th>
+            {% endfor %}
         </tr>
     </thead>
     <tbody>
@@ -38,3 +50,4 @@
     </tbody>
 </table>
 {% endfor %}
+{% endblock %}
