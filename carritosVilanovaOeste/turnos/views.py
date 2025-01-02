@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Responsabilidad, Persona, DiaSemana, FranjaHoraria, Sitio, Turno, Disponibilidad
+from django.http import HttpResponseBadRequest
 
 from django.db.models import Q
 import calendar
@@ -161,7 +162,18 @@ class TurnoCreateView(CreateView):
     model = Turno
     form_class = TurnoForm
     template_name = 'turno/turno_form.html'
-    success_url = reverse_lazy('turno_list')
+    success_url = reverse_lazy('turno_list')  # Redirige a la lista de turnos
+    
+    def get_initial(self):
+        initial = super().get_initial()
+        fecha_param = self.request.GET.get('fecha')  # Capturamos el parámetro 'fecha' de la URL
+        if fecha_param:
+            try:
+                # Convertimos el parámetro de fecha a un objeto de tipo date
+                initial['fecha'] = fecha_param
+            except ValueError:
+                return HttpResponseBadRequest("Fecha inválida")  # Manejo de error si la fecha no es válida
+        return initial
 
 class TurnoUpdateView(UpdateView):
     model = Turno
@@ -254,16 +266,23 @@ def turnos_por_semana(request, year, month):
                 dias = {}
                 for dia, fecha_dia in enumerate(dias_semana):  # Incluye las fechas exactas
                     if fecha_dia > fin_mes or fecha_dia < inicio_mes:
-                        dias[dia] = []  # Día fuera del rango del mes
+                        dias[dia] = {
+                            'turnos': [],  # Día fuera del rango del mes
+                            'fecha': fecha_dia  # Fecha del día
+                        }
                     else:
                         turnos_dia = turnos_semana.filter(
                             sitio=sitio,
                             franja_horaria=franja,
                             fecha=fecha_dia
                         )
-                        dias[dia] = turnos_dia
+                        dias[dia] = {
+                            'turnos': turnos_dia,  # Los turnos del día
+                            'fecha': fecha_dia  # Fecha del día
+                        }
                 franjas[franja] = dias
             sitios[sitio] = franjas
         datos_semanales.append((inicio, fin, dias_semana, sitios))
 
     return render(request, 'turno/turnos_por_semana.html', {'datos_semanales': datos_semanales})
+
