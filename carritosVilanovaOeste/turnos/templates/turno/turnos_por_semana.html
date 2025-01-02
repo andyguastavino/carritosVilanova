@@ -3,6 +3,8 @@
 {% block content %}
 {% load custom_filters %}
 
+
+
 <style>
     table {
         border-collapse: collapse;
@@ -14,8 +16,10 @@
         text-align: left;
     }
 </style>
+<h1>{{ datos_semanales.1.1|mes_es}}</h1>
+
 {% for inicio, fin, dias_semana, sitios in datos_semanales %}
-<h2>Semana del {{ inicio|date:"d M" }} al {{ fin|date:"d M" }}</h2>
+<h2>Semana del {{ inicio|date:"d" }} al {{ fin|date:"d" }}</h2>
 <table>
     <thead>
         <tr>
