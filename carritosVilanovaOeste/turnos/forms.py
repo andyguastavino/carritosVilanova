@@ -38,10 +38,20 @@ class SitioForm(forms.ModelForm):
 class TurnoForm(forms.ModelForm):
     class Meta:
         model = Turno
-        fields = ['dia_semana', 'franja_horaria', 'sitio', 'capitan', 'asistentes', 'activo']
+        fields = ['dia_semana', 'franja_horaria', 'sitio', 'capitan', 'asistentes', 'activo', 'fecha']
         widgets = {
             'asistentes': forms.CheckboxSelectMultiple(),
+            'fecha': forms.DateInput(format='%d/%m/%Y', attrs={'placeholder': 'DD/MM/YYYY'}),
         }
+        input_formats = {
+            'fecha': ['%d/%m/%Y'],  # Formato que aceptamos
+        }
+
+    def clean_fecha(self):
+        fecha = self.cleaned_data.get('fecha')
+        if not fecha:
+            raise forms.ValidationError('La fecha es obligatoria')
+        return fecha
 
 # Formulario para crear o editar una Disponibilidad
 class DisponibilidadForm(forms.ModelForm):

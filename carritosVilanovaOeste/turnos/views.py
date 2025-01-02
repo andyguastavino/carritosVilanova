@@ -154,10 +154,12 @@ class TurnoListView(ListView):
 class TurnoDetailView(DetailView):
     model = Turno
     template_name = 'turno/turno_detail.html'
+    
+from .forms import TurnoForm
 
 class TurnoCreateView(CreateView):
     model = Turno
-    fields = '__all__'
+    form_class = TurnoForm
     template_name = 'turno/turno_form.html'
     success_url = reverse_lazy('turno_list')
 
