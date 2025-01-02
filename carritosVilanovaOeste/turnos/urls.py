@@ -61,8 +61,10 @@ urlpatterns = [
     path('disponibilidades/<int:pk>/editar/', DisponibilidadUpdateView.as_view(), name='disponibilidad_update'),
     path('disponibilidades/<int:pk>/eliminar/', DisponibilidadDeleteView.as_view(), name='disponibilidad_delete'),
     
-    #Ruta para dibujar calendario
+    #Ruta para dibujar calendario no funcional
     path('calendario/', DibujarCalendario.as_view(), name='calendario'),
+    #Ruta donde harcodeo como quiero ver el caliendario
     path('horario/', horario_view, name='horario'),
+    #Ruta funcional de calendario
     path('turnos/<int:year>/<int:month>/', views.turnos_por_semana, name='turnos_por_semana'),
 ]

@@ -212,7 +212,6 @@ from django.shortcuts import render
 from django.db.models import Prefetch
 from datetime import date, timedelta
 from calendar import monthrange
-from .models import Turno, Sitio, FranjaHoraria
 
 def turnos_por_semana(request, year, month):
     # Obtener el rango de días del mes
@@ -220,13 +219,22 @@ def turnos_por_semana(request, year, month):
     inicio_mes = date(year, month, 1)
     fin_mes = date(year, month, last_day)
 
+    # Determinar el día de la semana del primer día del mes (0 = Lunes, 6 = Domingo)
+    dia_semana_inicio = inicio_mes.weekday()
+
+    # Ajustar la primera semana para que termine el primer domingo
+    fin_primera_semana = inicio_mes + timedelta(days=(6 - dia_semana_inicio))
+
     # Generar las semanas
     semanas = []
     inicio_semana = inicio_mes
     while inicio_semana <= fin_mes:
-        fin_semana = inicio_semana + timedelta(days=6)
-        semanas.append((inicio_semana, min(fin_semana, fin_mes)))
-        inicio_semana += timedelta(days=7)
+        if inicio_semana == inicio_mes:  # Primera semana
+            fin_semana = min(fin_primera_semana, fin_mes)
+        else:  # Semanas completas (lunes a domingo)
+            fin_semana = min(inicio_semana + timedelta(days=6), fin_mes)
+        semanas.append((inicio_semana, fin_semana))
+        inicio_semana = fin_semana + timedelta(days=1)
 
     # Obtener todos los turnos del mes
     turnos = Turno.objects.filter(fecha__range=(inicio_mes, fin_mes)).select_related(
