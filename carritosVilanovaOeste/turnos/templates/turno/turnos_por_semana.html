@@ -53,7 +53,7 @@
                                 {% else %}
                                     <!-- Botón para crear un nuevo turno -->
                                     <span>Fecha: {{ dia_info.fecha|date:"Y-m-d" }}</span><br>
-                                    <a href="{% url 'turno_create' %}?fecha={{ dia_info.fecha }}">
+                                    <a href="{% url 'turno_create' %}?fecha={{ dia_info.fecha|date:'Y-m-d' }}">
                                         <button class="create-turno">Crear Turno</button>
                                     </a>
                                 {% endif %}

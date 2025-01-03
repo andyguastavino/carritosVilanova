@@ -37,7 +37,6 @@ class Sitio(models.Model):
 
 class Turno(models.Model):
     fecha = models.DateField(null=True, blank=True)
-    dia_semana = models.ForeignKey(DiaSemana, on_delete=models.CASCADE, related_name='turnos')
     franja_horaria = models.ForeignKey(FranjaHoraria, on_delete=models.CASCADE, related_name='turnos')
     sitio = models.ForeignKey(Sitio, on_delete=models.CASCADE, related_name='turnos')
     capitan = models.ForeignKey('Persona', related_name='turnos_como_capitan', on_delete=models.SET_NULL, null=True, blank=True)
@@ -45,7 +44,7 @@ class Turno(models.Model):
     activo = models.BooleanField(default=True)
     
     def __str__(self):
-        return f"{self.dia_semana} - {self.franja_horaria}"
+        return f"{self.franja_horaria}"
     
     
     

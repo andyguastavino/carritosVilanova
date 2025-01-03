@@ -250,7 +250,7 @@ def turnos_por_semana(request, year, month):
 
     # Obtener todos los turnos del mes
     turnos = Turno.objects.filter(fecha__range=(inicio_mes, fin_mes)).select_related(
-        'dia_semana', 'franja_horaria', 'sitio', 'capitan'
+   'franja_horaria', 'sitio', 'capitan'
     ).prefetch_related(
         Prefetch('asistentes')
     )

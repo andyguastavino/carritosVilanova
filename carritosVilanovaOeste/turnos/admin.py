@@ -38,9 +38,9 @@ class SitioAdmin(admin.ModelAdmin):
 
 @admin.register(Turno)
 class TurnoAdmin(admin.ModelAdmin):
-    list_display = ('dia_semana', 'franja_horaria', 'sitio', 'capitan', 'activo')
-    list_filter = ('dia_semana', 'franja_horaria', 'sitio', 'activo')
-    search_fields = ('dia_semana__nombre', 'franja_horaria__nombre', 'sitio__nombre')
+    list_display = ('franja_horaria', 'sitio', 'capitan', 'activo')
+    list_filter = ('franja_horaria', 'sitio', 'activo')
+    search_fields = ('franja_horaria__nombre', 'sitio__nombre')
     autocomplete_fields = ('capitan', 'asistentes')
 
 @admin.register(Disponibilidad)
