@@ -7,15 +7,40 @@
     table {
         border-collapse: collapse;
         width: 100%;
+        margin-bottom: 20px;
     }
     th, td {
-        border: 1px solid #000;
-        padding: 5px;
+        border: 1px solid #ddd;
+        padding: 10px;
         text-align: left;
+    }
+    th {
+        background-color: #f4f4f4;
+    }
+    .navigation {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+    .edit-turno, .create-turno {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        text-decoration: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .edit-turno:hover, .create-turno:hover {
+        background-color: #0056b3;
     }
 </style>
 
-<h1>{{ datos_semanales.1.1|mes_es }}</h1>
+<div class="navigation">
+    <a href="{% url 'turnos_por_semana' prev_year prev_month %}">&laquo; {{ prev_month|month_name_filter }} {{ prev_year }}</a>
+    <h1>{{ month_name }} {{ year }}</h1>
+    <a href="{% url 'turnos_por_semana' next_year next_month %}">{{ next_month|month_name_filter }} {{ next_year }} &raquo;</a>
+</div>
 
 {% for inicio, fin, dias_semana, sitios in datos_semanales %}
     <h2>Semana del {{ inicio|date:"d" }} al {{ fin|date:"d" }}</h2>
@@ -25,7 +50,7 @@
                 <th rowspan="2">Sitio</th>
                 <th rowspan="2">Franja Horaria</th>
                 {% for dia in dias_semana %}
-                    <th>{{ dia|date:"l"|dia_semana_es }} {{ dia|date:"d" }}</th>
+                    <th>{{ dia|date:"l"|dia_semana_es }}<br>{{ dia|date:"d/m" }}</th>
                 {% endfor %}
             </tr>
         </thead>
@@ -41,18 +66,18 @@
                             <td>
                                 {% if dia_info.turnos %}
                                     {% for turno in dia_info.turnos %}
-                                        {{ turno.capitan }}<br>
+                                        <strong>Capitán:</strong> {{ turno.capitan }}<br>
+                                        <strong>Asistentes:</strong><br>
                                         {% for asistente in turno.asistentes.all %}
-                                            {{ asistente }}<br>
+                                            - {{ asistente }}<br>
                                         {% endfor %}
-                                        <!-- Botón para editar el turno -->
                                         <a href="{% url 'turno_update' turno.id %}">
                                             <button class="edit-turno">Editar Turno</button>
                                         </a>
+                                        <hr>
                                     {% endfor %}
                                 {% else %}
-                                    <!-- Botón para crear un nuevo turno -->
-                                    <span>Fecha: {{ dia_info.fecha|date:"Y-m-d" }}</span><br>
+                                    <span>No hay turnos</span><br>
                                     <a href="{% url 'turno_create' %}?fecha={{ dia_info.fecha|date:'Y-m-d' }}">
                                         <button class="create-turno">Crear Turno</button>
                                     </a>

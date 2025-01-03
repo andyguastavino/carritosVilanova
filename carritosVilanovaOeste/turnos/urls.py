@@ -65,6 +65,6 @@ urlpatterns = [
     path('calendario/', DibujarCalendario.as_view(), name='calendario'),
     #Ruta donde harcodeo como quiero ver el caliendario
     path('horario/', horario_view, name='horario'),
-    #Ruta funcional de calendario
+    #Ruta funcional de calendario 
     path('turnos/<int:year>/<int:month>/', views.turnos_por_semana, name='turnos_por_semana'),
 ]

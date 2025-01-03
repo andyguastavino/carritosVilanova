@@ -2,49 +2,38 @@
 
 {% block content %}
 <div class="container mt-5">
-  <h1 class="mb-4">Listado de Turnos</h1>
-  <table class="table table-bordered table-striped">
-      <thead class="table-dark">
-          <tr>
-              <th>#</th>
-              <th>Fecha</th>
-              <th>Día de la Semana</th>
-              <th>Franja Horaria</th>
-              <th>Sitio</th>
-              <th>Capitán</th>
-              <th>Asistentes</th>
-              <th>Activo</th>
-          </tr>
-      </thead>
-      <tbody>
-          {% for turno in turnos %}
-          <tr>
-              <td>{{ forloop.counter }}</td>
-              <td>{{ turno.fecha|date:"d/m/Y" }}</td>
-              <td>{{ turno.dia_semana }}</td>
-              <td>{{ turno.franja_horaria }}</td>
-              <td>{{ turno.sitio }}</td>
-              <td>{{ turno.capitan }}</td>
-              <td>
-                  {% if turno.asistentes.exists %}
-                      <ul>
-                          {% for asistente in turno.asistentes.all %}
-                              <li>{{ asistente }}</li>
-                          {% endfor %}
-                      </ul>
-                  {% else %}
-                      <span>No hay asistentes</span>
-                  {% endif %}
-              </td>
-              <td>{{ turno.activo|yesno:"Sí,No" }}</td>
-          </tr>
-          {% empty %}
-          <tr>
-              <td colspan="8" class="text-center">No hay turnos disponibles.</td>
-          </tr>
+  <h1 class="mb-4">Filtrar Turnos</h1>
+  <form id="filter-form" method="get">
+    <div class="row">
+      <div class="col-md-6">
+        <label for="year" class="form-label">Año</label>
+        <select id="year" name="year" class="form-select">
+          {% for y in years %}
+          <option value="{{ y }}" {% if y == current_year %}selected{% endif %}>{{ y }}</option>
           {% endfor %}
-      </tbody>
-  </table>
-  <a href="{% url 'turno_create' %}">Añadir Nuevo Turno</a>
-</div> 
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label for="month" class="form-label">Mes</label>
+        <select id="month" name="month" class="form-select">
+          {% for m in months %}
+          <option value="{{ m.value }}" {% if m.value == current_month %}selected{% endif %}>{{ m.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="mt-4">
+      <button type="button" id="apply-filter" class="btn btn-primary">Aplicar Filtro</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  document.getElementById('apply-filter').addEventListener('click', function() {
+    const year = document.getElementById('year').value;
+    const month = document.getElementById('month').value;
+    const url = `/turnos/${year}/${month}/`; // Construir la URL deseada
+    window.location.href = url; // Redirigir a la URL
+  });
+</script>
 {% endblock %}

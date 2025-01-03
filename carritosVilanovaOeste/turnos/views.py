@@ -144,12 +144,35 @@ class SitioDeleteView(DeleteView):
     success_url = reverse_lazy('sitio_list')
 
 # CRUD para Turno
-from collections import defaultdict
+from django.utils.timezone import datetime
 
 class TurnoListView(ListView):
     model = Turno
     template_name = 'turno/turno_list.html'
     context_object_name = 'turnos'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        year = self.request.GET.get('year')
+        month = self.request.GET.get('month')
+        if year and month:
+            queryset = queryset.filter(fecha__year=year, fecha__month=month)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        current_year = datetime.now().year
+        current_month = datetime.now().month
+        years = range(current_year - 5, current_year + 5)  # Opciones de año
+        months = [
+            {'value': i, 'name': datetime(2000, i, 1).strftime('%B')}
+            for i in range(1, 13)
+        ]
+        context['years'] = years
+        context['months'] = months
+        context['current_year'] = int(self.request.GET.get('year', current_year))
+        context['current_month'] = int(self.request.GET.get('month', current_month))
+        return context
 
 
 class TurnoDetailView(DetailView):
@@ -223,11 +246,22 @@ def horario_view(request):
 
 
 from django.shortcuts import render
-from django.db.models import Prefetch
+from django.http import Http404
+from calendar import monthrange, month_name
 from datetime import date, timedelta
-from calendar import monthrange
+from django.db.models import Prefetch
+from .models import Turno, Sitio, FranjaHoraria
 
 def turnos_por_semana(request, year, month):
+    # Validar los parámetros year y month
+    try:
+        year = int(year)
+        month = int(month)
+        if not (1 <= month <= 12):
+            raise ValueError("Mes fuera de rango")
+    except (ValueError, TypeError):
+        raise Http404("Fecha inválida")
+
     # Obtener el rango de días del mes
     _, last_day = monthrange(year, month)
     inicio_mes = date(year, month, 1)
@@ -250,7 +284,7 @@ def turnos_por_semana(request, year, month):
 
     # Obtener todos los turnos del mes
     turnos = Turno.objects.filter(fecha__range=(inicio_mes, fin_mes)).select_related(
-   'franja_horaria', 'sitio', 'capitan'
+        'franja_horaria', 'sitio', 'capitan'
     ).prefetch_related(
         Prefetch('asistentes')
     )
@@ -284,5 +318,20 @@ def turnos_por_semana(request, year, month):
             sitios[sitio] = franjas
         datos_semanales.append((inicio, fin, dias_semana, sitios))
 
-    return render(request, 'turno/turnos_por_semana.html', {'datos_semanales': datos_semanales})
+    # Calcular el mes anterior y el siguiente
+    prev_month = (month - 1) if month > 1 else 12
+    prev_year = year if month > 1 else year - 1
+    next_month = (month + 1) if month < 12 else 1
+    next_year = year if month < 12 else year + 1
 
+    # Renderizar la plantilla con el contexto necesario
+    return render(request, 'turno/turnos_por_semana.html', {
+        'datos_semanales': datos_semanales,
+        'year': year,
+        'month': month,
+        'month_name': month_name[month],
+        'prev_month': prev_month,
+        'prev_year': prev_year,
+        'next_month': next_month,
+        'next_year': next_year,
+    })

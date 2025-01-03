@@ -1,4 +1,6 @@
 from django import template
+from django import template
+from calendar import month_name as calendar_month_name
 
 register = template.Library()
 
@@ -32,3 +34,10 @@ def mes_es(fecha):
         12: 'Diciembre'
     }
     return meses.get(fecha.month, fecha.month)
+
+@register.filter
+def month_name_filter(value):
+    try:
+        return calendar_month_name[int(value)]
+    except (ValueError, IndexError, TypeError):
+        return ""
