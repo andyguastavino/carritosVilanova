@@ -47,12 +47,16 @@ class TurnoForm(forms.ModelForm):
             'fecha': ['%d/%m/%Y'],  # Formato que aceptamos
         }
 
+    def __init__(self, *args, **kwargs):
+        super(TurnoForm, self).__init__(*args, **kwargs)
+        # Filtramos el queryset del campo 'capitan' para que solo se muestren los capitanes
+        self.fields['capitan'].queryset = Persona.objects.filter(es_capitan=True)
+
     def clean_fecha(self):
         fecha = self.cleaned_data.get('fecha')
         if not fecha:
             raise forms.ValidationError('La fecha es obligatoria')
         return fecha
-
 # Formulario para crear o editar una Disponibilidad
 class DisponibilidadForm(forms.ModelForm):
     class Meta:
