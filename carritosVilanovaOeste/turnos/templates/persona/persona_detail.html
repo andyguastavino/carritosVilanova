@@ -15,4 +15,8 @@
 <a href="{% url 'persona_update' object.id %}" class="btn btn-warning">Editar</a>
 <a href="{% url 'persona_delete' object.id %}" class="btn btn-danger">Eliminar</a>
 <a href="{% url 'persona_list' %}" class="btn btn-secondary">Volver</a>
+
+<!-- Nuevo botón para gestionar la disponibilidad -->
+<a href="{% url 'persona_disponibilidad' object.id %}" class="btn btn-primary">Gestionar Disponibilidad</a>
+
 {% endblock %}

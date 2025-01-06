@@ -52,6 +52,10 @@ class Disponibilidad(models.Model):
     persona = models.ForeignKey(Persona, on_delete=models.CASCADE, related_name='disponibilidades')
     dia_semana = models.ForeignKey(DiaSemana, on_delete=models.CASCADE, related_name='disponibilidades')
     franja_horaria = models.ForeignKey(FranjaHoraria, on_delete=models.CASCADE, related_name='disponibilidades')
+    activo = models.BooleanField(default=True)
+    class Meta:
+        unique_together = ('persona', 'dia_semana', 'franja_horaria')  # Una combinación única
+
     
     def __str__(self):
         return f"{self.persona.nombre} - {self.dia_semana.nombre} ({self.franja_horaria.nombre})"

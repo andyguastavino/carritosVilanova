@@ -96,4 +96,8 @@ class TurnoForm(forms.ModelForm):
 class DisponibilidadForm(forms.ModelForm):
     class Meta:
         model = Disponibilidad
-        fields = ['persona', 'dia_semana', 'franja_horaria']
+        fields = ['dia_semana', 'franja_horaria']
+    
+    # Si quieres una interfaz más amigable para las franjas horarias, puedes usar el widget select
+    dia_semana = forms.ModelChoiceField(queryset=DiaSemana.objects.all(), empty_label="Selecciona un día")
+    franja_horaria = forms.ModelChoiceField(queryset=FranjaHoraria.objects.all(), empty_label="Selecciona una franja horaria")

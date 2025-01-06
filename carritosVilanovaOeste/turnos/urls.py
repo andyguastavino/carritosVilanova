@@ -67,4 +67,7 @@ urlpatterns = [
     path('horario/', horario_view, name='horario'),
     #Ruta funcional de calendario 
     path('turnos/<int:year>/<int:month>/', views.turnos_por_semana, name='turnos_por_semana'),
+    
+    #Ruta para gestionar disponibilidades de una persona:
+    path('persona/<int:pk>/disponibilidad/', views.persona_disponibilidad, name='persona_disponibilidad'),
 ]

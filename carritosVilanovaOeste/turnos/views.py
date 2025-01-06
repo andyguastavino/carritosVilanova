@@ -353,3 +353,36 @@ def turnos_por_semana(request, year, month):
         'next_month': next_month,
         'next_year': next_year,
     })
+    
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Persona, Disponibilidad
+from .forms import DisponibilidadForm
+from django.contrib import messages
+
+
+def persona_disponibilidad(request, pk):
+    persona = get_object_or_404(Persona, pk=pk)
+    disponibilidades = persona.disponibilidades.all()  # Obtener las disponibilidades actuales
+
+    # Si el formulario fue enviado
+    if request.method == "POST":
+        form = DisponibilidadForm(request.POST)
+        if form.is_valid():
+            # Verificar si la disponibilidad ya existe
+            dia = form.cleaned_data['dia_semana']
+            franja = form.cleaned_data['franja_horaria']
+            # Evitar duplicados
+            if not Disponibilidad.objects.filter(persona=persona, dia_semana=dia, franja_horaria=franja).exists():
+                # Crear una nueva disponibilidad
+                nueva_disponibilidad = form.save(commit=False)
+                nueva_disponibilidad.persona = persona
+                nueva_disponibilidad.save()
+                return redirect('persona_disponibilidad', pk=persona.pk)
+    else:
+        form = DisponibilidadForm()
+
+    return render(request, 'persona/persona_disponibilidad.html', {
+        'persona': persona,
+        'disponibilidades': disponibilidades,
+        'form': form,
+    })

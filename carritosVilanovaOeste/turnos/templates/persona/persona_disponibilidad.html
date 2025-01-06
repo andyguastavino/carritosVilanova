@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Gestionar Disponibilidad de {{ persona.nombre }}</h1>
+
+<!-- Mostrar mensaje de éxito si se agregó una disponibilidad -->
+{% if messages %}
+    <div class="alert alert-success">
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<!-- Mostrar las disponibilidades actuales -->
+<p>Disponibilidad actual:</p>
+<ul>
+    {% for disponibilidad in disponibilidades %}
+        <li>{{ disponibilidad.dia_semana.nombre }} - {{ disponibilidad.franja_horaria.nombre }}</li>
+    {% empty %}
+        <li>No hay disponibilidades registradas.</li>
+    {% endfor %}
+</ul>
+
+<!-- Formulario para agregar una nueva disponibilidad -->
+<h3>Agregar Disponibilidad</h3>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Agregar Disponibilidad</button>
+</form>
+
+<a href="{% url 'persona_list' %}" class="btn btn-secondary">Volver a la lista de personas</a>
+
+{% endblock %}
