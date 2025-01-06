@@ -38,7 +38,7 @@ class SitioForm(forms.ModelForm):
 class TurnoForm(forms.ModelForm):
     class Meta:
         model = Turno
-        fields = ['franja_horaria', 'sitio', 'capitan', 'asistentes', 'activo', 'fecha']
+        fields = ['fecha','franja_horaria', 'sitio', 'capitan', 'asistentes', 'activo']
         widgets = {
             'asistentes': forms.CheckboxSelectMultiple(),
             'fecha': forms.DateInput(format='%d/%m/%Y', attrs={'placeholder': 'DD/MM/YYYY'}),
