@@ -355,34 +355,44 @@ def turnos_por_semana(request, year, month):
     })
     
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Persona, Disponibilidad
-from .forms import DisponibilidadForm
+from .models import Persona, Disponibilidad, DiaSemana, FranjaHoraria
 from django.contrib import messages
-
 
 def persona_disponibilidad(request, pk):
     persona = get_object_or_404(Persona, pk=pk)
-    disponibilidades = persona.disponibilidades.all()  # Obtener las disponibilidades actuales
+    dias_semana = DiaSemana.objects.all()  # Obtener todos los días
+    franjas_horarias = FranjaHoraria.objects.all()  # Obtener todas las franjas horarias
+    disponibilidades = persona.disponibilidades.all()
 
-    # Si el formulario fue enviado
+    # Crear una lista de combinaciones formateadas como 'dia_id-franja_id'
+    combinaciones_existentes = [
+        f"{disponibilidad.dia_semana.id}-{disponibilidad.franja_horaria.id}"
+        for disponibilidad in disponibilidades
+    ]
+
     if request.method == "POST":
-        form = DisponibilidadForm(request.POST)
-        if form.is_valid():
-            # Verificar si la disponibilidad ya existe
-            dia = form.cleaned_data['dia_semana']
-            franja = form.cleaned_data['franja_horaria']
-            # Evitar duplicados
-            if not Disponibilidad.objects.filter(persona=persona, dia_semana=dia, franja_horaria=franja).exists():
-                # Crear una nueva disponibilidad
-                nueva_disponibilidad = form.save(commit=False)
-                nueva_disponibilidad.persona = persona
-                nueva_disponibilidad.save()
-                return redirect('persona_disponibilidad', pk=persona.pk)
-    else:
-        form = DisponibilidadForm()
+        # Obtener las combinaciones seleccionadas
+        selected_combinations = request.POST.getlist('disponibilidades')
+
+        # Comprobar si la combinación ya existe y agregar solo las nuevas
+        for combinacion in selected_combinations:
+            dia_id, franja_id = combinacion.split('-')  # Separar la combinación en día y franja
+            dia = DiaSemana.objects.get(id=dia_id)
+            franja = FranjaHoraria.objects.get(id=franja_id)
+
+            # Comprobamos si la combinación ya existe
+            if f"{dia.id}-{franja.id}" not in combinaciones_existentes:
+                # Creamos la disponibilidad
+                Disponibilidad.objects.create(persona=persona, dia_semana=dia, franja_horaria=franja)
+                combinaciones_existentes.append(f"{dia.id}-{franja.id}")  # Añadir la combinación a la lista de combinaciones existentes
+
+        messages.success(request, 'Disponibilidades agregadas con éxito.')
+        return redirect('persona_disponibilidad', pk=persona.pk)
 
     return render(request, 'persona/persona_disponibilidad.html', {
         'persona': persona,
+        'dias_semana': dias_semana,
+        'franjas_horarias': franjas_horarias,
         'disponibilidades': disponibilidades,
-        'form': form,
+        'combinaciones_existentes': combinaciones_existentes,  # Pasamos la lista de combinaciones formateadas
     })

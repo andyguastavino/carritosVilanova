@@ -3,7 +3,7 @@
 {% block content %}
 <h1>Gestionar Disponibilidad de {{ persona.nombre }}</h1>
 
-<!-- Mostrar mensaje de éxito si se agregó una disponibilidad -->
+<!-- Mensajes de éxito -->
 {% if messages %}
     <div class="alert alert-success">
         {% for message in messages %}
@@ -12,22 +12,36 @@
     </div>
 {% endif %}
 
-<!-- Mostrar las disponibilidades actuales -->
-<p>Disponibilidad actual:</p>
-<ul>
-    {% for disponibilidad in disponibilidades %}
-        <li>{{ disponibilidad.dia_semana.nombre }} - {{ disponibilidad.franja_horaria.nombre }}</li>
-    {% empty %}
-        <li>No hay disponibilidades registradas.</li>
-    {% endfor %}
-</ul>
-
-<!-- Formulario para agregar una nueva disponibilidad -->
-<h3>Agregar Disponibilidad</h3>
+<!-- Formulario para seleccionar disponibilidades -->
 <form method="POST">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-success">Agregar Disponibilidad</button>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Día / Franja</th>
+                {% for franja in franjas_horarias %}
+                    <th>{{ franja.nombre }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for dia in dias_semana %}
+                <tr>
+                    <td>{{ dia.nombre }}</td>
+                    {% for franja in franjas_horarias %}
+                        <td>
+                            <!-- Verificamos si la combinación (día, franja) ya existe -->
+                            <input type="checkbox" name="disponibilidades" value="{{ dia.id }}-{{ franja.id }}"
+                                   id="dia_{{ dia.id }}_franja_{{ franja.id }}"
+                                   {% if dia.id|add:"-"|add:franja.id in combinaciones_existentes %} checked {% endif %}>
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-success">Guardar Disponibilidades</button>
 </form>
 
 <a href="{% url 'persona_list' %}" class="btn btn-secondary">Volver a la lista de personas</a>
