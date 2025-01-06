@@ -45,7 +45,7 @@ class TurnoAdmin(admin.ModelAdmin):
 
 @admin.register(Disponibilidad)
 class DisponibilidadAdmin(admin.ModelAdmin):
-    list_display = ('persona', 'dia_semana', 'franja_horaria', 'sitio', 'limite_mensual')
-    list_filter = ('dia_semana', 'franja_horaria', 'sitio')
-    search_fields = ('persona__nombre', 'dia_semana__nombre', 'franja_horaria__nombre', 'sitio__nombre')
-    autocomplete_fields = ('persona', 'sitio')
+    list_display = ('persona', 'dia_semana', 'franja_horaria')
+    list_filter = ('dia_semana', 'franja_horaria')
+    search_fields = ('persona__nombre', 'dia_semana__nombre', 'franja_horaria__nombre')
+    autocomplete_fields = ('persona',)

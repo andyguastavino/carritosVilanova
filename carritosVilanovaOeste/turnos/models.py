@@ -52,8 +52,6 @@ class Disponibilidad(models.Model):
     persona = models.ForeignKey(Persona, on_delete=models.CASCADE, related_name='disponibilidades')
     dia_semana = models.ForeignKey(DiaSemana, on_delete=models.CASCADE, related_name='disponibilidades')
     franja_horaria = models.ForeignKey(FranjaHoraria, on_delete=models.CASCADE, related_name='disponibilidades')
-    sitio = models.ForeignKey(Sitio, on_delete=models.CASCADE, related_name='disponibilidades')
-    limite_mensual = models.PositiveIntegerField(null=True, blank=True)  # Ejemplo: Máximo 2 domingos al mes
     
     def __str__(self):
         return f"{self.persona.nombre} - {self.dia_semana.nombre} ({self.franja_horaria.nombre})"

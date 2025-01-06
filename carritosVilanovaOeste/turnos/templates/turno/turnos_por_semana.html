@@ -78,7 +78,7 @@
                                     {% endfor %}
                                 {% else %}
                                     <span>No hay turnos</span><br>
-                                    <a href="{% url 'turno_create' %}?fecha={{ dia_info.fecha|date:'Y-m-d' }}">
+                                    <a href="{% url 'turno_create' %}?fecha={{ dia_info.fecha|date:'Y-m-d' }}&sitio={{ sitio.id }}">
                                         <button class="create-turno">Crear Turno</button>
                                     </a>
                                 {% endif %}

@@ -190,12 +190,22 @@ class TurnoCreateView(CreateView):
     def get_initial(self):
         initial = super().get_initial()
         fecha_param = self.request.GET.get('fecha')  # Capturamos el parámetro 'fecha' de la URL
+        sitio_param = self.request.GET.get('sitio')  # Capturamos el parámetro 'sitio' de la URL
         if fecha_param:
             try:
                 # Convertimos el parámetro de fecha a un objeto de tipo date
                 initial['fecha'] = fecha_param
             except ValueError:
                 return HttpResponseBadRequest("Fecha inválida")  # Manejo de error si la fecha no es válida
+          # Manejo del parámetro 'sitio'
+        if sitio_param:
+            try:
+                # Intentar obtener el objeto Sitio relacionado
+                sitio = Sitio.objects.get(id=sitio_param)
+                initial['sitio'] = sitio  # Asignar el sitio al campo correspondiente
+            except Sitio.DoesNotExist:
+                return HttpResponseBadRequest("Sitio no válido")  # Manejo de error si el sitio no existe
+        
         return initial
 
 class TurnoUpdateView(UpdateView):
