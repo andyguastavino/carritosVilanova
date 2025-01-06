@@ -191,6 +191,7 @@ class TurnoCreateView(CreateView):
         initial = super().get_initial()
         fecha_param = self.request.GET.get('fecha')  # Capturamos el parámetro 'fecha' de la URL
         sitio_param = self.request.GET.get('sitio')  # Capturamos el parámetro 'sitio' de la URL
+        franja_param = self.request.GET.get('franja')  # Capturamos el parámetro 'franja' de la URL
         if fecha_param:
             try:
                 # Convertimos el parámetro de fecha a un objeto de tipo date
@@ -205,6 +206,13 @@ class TurnoCreateView(CreateView):
                 initial['sitio'] = sitio  # Asignar el sitio al campo correspondiente
             except Sitio.DoesNotExist:
                 return HttpResponseBadRequest("Sitio no válido")  # Manejo de error si el sitio no existe
+        if franja_param:
+            try:
+                # Intentar obtener el objeto FranjaHoraria relacionado
+                franja = FranjaHoraria.objects.get(id=franja_param)
+                initial['franja_horaria'] = franja  # Asignar la franja al campo correspondiente
+            except FranjaHoraria.DoesNotExist:
+                return HttpResponseBadRequest("Franja horaria no válida")
         
         return initial
 

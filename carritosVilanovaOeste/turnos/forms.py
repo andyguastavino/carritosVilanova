@@ -50,6 +50,7 @@ class TurnoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         # Extraer el parámetro 'sitio_id' de los argumentos
         sitio_id = kwargs.pop('sitio_id', None)
+        franja_horaria_id = kwargs.pop('franja_horaria_id', None)
         super(TurnoForm, self).__init__(*args, **kwargs)
         
         # Filtrar el queryset del campo 'capitan' para que solo se muestren los capitanes
@@ -65,6 +66,15 @@ class TurnoForm(forms.ModelForm):
                 self.fields['sitio'].widget.attrs['readonly'] = True  # Opcional: Hacerlo de solo lectura
             except Sitio.DoesNotExist:
                 raise forms.ValidationError('El sitio proporcionado no es válido.')
+         # Manejo del campo 'franja_horaria'
+        if franja_horaria_id:
+            try:
+                franja = FranjaHoraria.objects.get(id=franja_horaria_id)
+                self.fields['franja_horaria'].queryset = FranjaHoraria.objects.filter(id=franja_horaria_id)
+                self.fields['franja_horaria'].initial = franja
+                self.fields['franja_horaria'].widget.attrs['readonly'] = True  # Opcional: Hacer de solo lectura
+            except FranjaHoraria.DoesNotExist:
+                raise forms.ValidationError('La franja horaria proporcionada no es válida.')
 
     def clean_sitio(self):
         sitio = self.cleaned_data.get('sitio')
@@ -77,6 +87,11 @@ class TurnoForm(forms.ModelForm):
         if not fecha:
             raise forms.ValidationError('La fecha es obligatoria.')
         return fecha
+    def clean_franja_horaria(self):
+        franja_horaria = self.cleaned_data.get('franja_horaria')
+        if not franja_horaria:
+            raise forms.ValidationError('La franja horaria es obligatoria.')
+        return franja_horaria
 # Formulario para crear o editar una Disponibilidad
 class DisponibilidadForm(forms.ModelForm):
     class Meta:
