@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% load custom_filters %}
 <h1>Gestionar Disponibilidad de {{ persona.nombre }}</h1>
 
 <!-- Mensajes de éxito -->
@@ -30,11 +31,19 @@
                     <td>{{ dia.nombre }}</td>
                     {% for franja in franjas_horarias %}
                         <td>
-                            <!-- Verificamos si la combinación (día, franja) ya existe -->
+                            <!-- Depuración: Mostrar información sobre la combinación y el estado del checkbox -->
+                            <small>
+                                Combinación: {{ dia.id }}-{{ franja.id }}<br>
+                                Valor en combinaciones_existentes: {{ combinaciones_existentes|get_item:dia.id|stringformat:"s"|add:"-"|add:franja.id }}
+                                <br>
+                                Estado del checkbox: {% if combinaciones_existentes|get_item:"{{ dia.id }}-{{ franja.id }}" %}checked{% else %}no checked{% endif %}
+                            </small>
+                            
+                            <!-- El input checkbox -->
                             <input type="checkbox" name="disponibilidades" value="{{ dia.id }}-{{ franja.id }}"
-                                   id="dia_{{ dia.id }}_franja_{{ franja.id }}"
-                                   {% if dia.id|add:"-"|add:franja.id in combinaciones_existentes %} checked {% endif %}>
-                        </td>
+                            id="dia_{{ dia.id }}_franja_{{ franja.id }}"
+                            {% if combinaciones_existentes|get_item:dia.id|stringformat:"s"|add:"-"|add:franja.id %} checked {% endif %}>
+                                                                  </td>
                     {% endfor %}
                 </tr>
             {% endfor %}
@@ -43,9 +52,11 @@
 
     <button type="submit" class="btn btn-success">Guardar Disponibilidades</button>
 </form>
-<pre>{{combinaciones_existentes}}</pre>
-<!-- Botón para volver a la lista de personas -->
 
+<!-- Depuración: Ver todo el contenido del diccionario combinaciones_existentes -->
+<pre>{{ combinaciones_existentes }}</pre>
+
+<!-- Botón para volver a la lista de personas -->
 <a href="{% url 'persona_list' %}" class="btn btn-secondary">Volver a la lista de personas</a>
 
 {% endblock %}

@@ -41,3 +41,12 @@ def month_name_filter(value):
         return calendar_month_name[int(value)]
     except (ValueError, IndexError, TypeError):
         return ""
+    
+    
+@register.filter
+def get_item(dictionary, key):
+    """Devuelve el valor de la clave en un diccionario."""
+    try:
+        return dictionary.get(key)
+    except (TypeError, AttributeError):
+        return None
