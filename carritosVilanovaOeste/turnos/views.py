@@ -364,11 +364,17 @@ def persona_disponibilidad(request, pk):
     franjas_horarias = FranjaHoraria.objects.all()  # Obtener todas las franjas horarias
     disponibilidades = persona.disponibilidades.all()
 
-    # Crear una lista de combinaciones formateadas como 'dia_id-franja_id'
-    combinaciones_existentes = [
-        f"{disponibilidad.dia_semana.id}-{disponibilidad.franja_horaria.id}"
-        for disponibilidad in disponibilidades
-    ]
+    # Inicializar el diccionario de combinaciones con False
+    combinaciones_existentes = {
+        f"{dia.id}-{franja.id}": False
+        for dia in dias_semana
+        for franja in franjas_horarias
+    }
+
+    # Actualizar el diccionario marcando las combinaciones existentes como True
+    for disponibilidad in disponibilidades:
+        key = f"{disponibilidad.dia_semana.id}-{disponibilidad.franja_horaria.id}"
+        combinaciones_existentes[key] = True
 
     if request.method == "POST":
         # Obtener las combinaciones seleccionadas
@@ -380,11 +386,11 @@ def persona_disponibilidad(request, pk):
             dia = DiaSemana.objects.get(id=dia_id)
             franja = FranjaHoraria.objects.get(id=franja_id)
 
-            # Comprobamos si la combinación ya existe
-            if f"{dia.id}-{franja.id}" not in combinaciones_existentes:
+            # Comprobamos si la combinación ya existe en el diccionario
+            if not combinaciones_existentes[f"{dia.id}-{franja.id}"]:
                 # Creamos la disponibilidad
                 Disponibilidad.objects.create(persona=persona, dia_semana=dia, franja_horaria=franja)
-                combinaciones_existentes.append(f"{dia.id}-{franja.id}")  # Añadir la combinación a la lista de combinaciones existentes
+                combinaciones_existentes[f"{dia.id}-{franja.id}"] = True  # Marcar como existente
 
         messages.success(request, 'Disponibilidades agregadas con éxito.')
         return redirect('persona_disponibilidad', pk=persona.pk)
@@ -394,5 +400,5 @@ def persona_disponibilidad(request, pk):
         'dias_semana': dias_semana,
         'franjas_horarias': franjas_horarias,
         'disponibilidades': disponibilidades,
-        'combinaciones_existentes': combinaciones_existentes,  # Pasamos la lista de combinaciones formateadas
+        'combinaciones_existentes': combinaciones_existentes,  # Pasamos el diccionario de combinaciones
     })
