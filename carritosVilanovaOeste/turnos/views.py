@@ -377,27 +377,32 @@ def persona_disponibilidad(request, pk):
         combinaciones_existentes[key] = True
 
     if request.method == "POST":
-        # Obtener las combinaciones seleccionadas
+        # Obtener las combinaciones seleccionadas (checked)
         selected_combinations = request.POST.getlist('disponibilidades')
 
-        # Comprobar si la combinación ya existe y agregar solo las nuevas
-        for combinacion in selected_combinations:
-            dia_id, franja_id = combinacion.split('-')  # Separar la combinación en día y franja
-            dia = DiaSemana.objects.get(id=dia_id)
-            franja = FranjaHoraria.objects.get(id=franja_id)
+        # Actualizar todas las combinaciones
+        for dia in dias_semana:
+            for franja in franjas_horarias:
+                key = f"{dia.id}-{franja.id}"
+                if key in selected_combinations:
+                    # Si está marcada (checked), asegurarse de que existe
+                    if not combinaciones_existentes[key]:
+                        Disponibilidad.objects.create(
+                            persona=persona, 
+                            dia_semana=dia, 
+                            franja_horaria=franja
+                        )
+                else:
+                    # Si no está marcada (unchecked), eliminar si existe
+                    if combinaciones_existentes[key]:
+                        Disponibilidad.objects.filter(
+                            persona=persona, 
+                            dia_semana=dia, 
+                            franja_horaria=franja
+                        ).delete()
 
-            # Comprobamos si la combinación ya existe en el diccionario
-            if not combinaciones_existentes[f"{dia.id}-{franja.id}"]:
-                # Creamos la disponibilidad
-                Disponibilidad.objects.create(persona=persona, dia_semana=dia, franja_horaria=franja)
-                combinaciones_existentes[f"{dia.id}-{franja.id}"] = True  # Marcar como existente
-
-        messages.success(request, 'Disponibilidades agregadas con éxito.')
+        messages.success(request, 'Disponibilidades actualizadas con éxito.')
         return redirect('persona_disponibilidad', pk=persona.pk)
-    
-    
-    print("Combinaciones existentes:", combinaciones_existentes)
-
 
     return render(request, 'persona/persona_disponibilidad.html', {
         'persona': persona,
