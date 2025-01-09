@@ -45,8 +45,11 @@ def month_name_filter(value):
     
 @register.filter
 def get_item(dictionary, key):
-    """Devuelve el valor de la clave en un diccionario."""
-    try:
-        return dictionary.get(key)
-    except (TypeError, AttributeError):
-        return None
+    return dictionary.get(key)
+
+@register.filter
+def generate_key(dia_id, franja_id):
+    """
+    Genera una clave en el formato 'dia_id-franja_id'.
+    """
+    return f"{dia_id}-{franja_id}"

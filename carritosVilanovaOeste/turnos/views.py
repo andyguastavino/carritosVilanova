@@ -394,6 +394,10 @@ def persona_disponibilidad(request, pk):
 
         messages.success(request, 'Disponibilidades agregadas con éxito.')
         return redirect('persona_disponibilidad', pk=persona.pk)
+    
+    
+    print("Combinaciones existentes:", combinaciones_existentes)
+
 
     return render(request, 'persona/persona_disponibilidad.html', {
         'persona': persona,

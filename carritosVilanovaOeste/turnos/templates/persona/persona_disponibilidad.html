@@ -31,19 +31,24 @@
                     <td>{{ dia.nombre }}</td>
                     {% for franja in franjas_horarias %}
                         <td>
+                            <!-- Generar la clave utilizando el filtro personalizado -->
+                            {% with dia.id|generate_key:franja.id as key %}
+                            
                             <!-- Depuración: Mostrar información sobre la combinación y el estado del checkbox -->
                             <small>
-                                Combinación: {{ dia.id }}-{{ franja.id }}<br>
-                                Valor en combinaciones_existentes: {{ combinaciones_existentes|get_item:dia.id|stringformat:"s"|add:"-"|add:franja.id }}
+                                Clave: {{ key }}<br>
+                                Valor en combinaciones_existentes: {{ combinaciones_existentes|get_item:key }}
                                 <br>
-                                Estado del checkbox: {% if combinaciones_existentes|get_item:"{{ dia.id }}-{{ franja.id }}" %}checked{% else %}no checked{% endif %}
+                                Estado del checkbox: {% if combinaciones_existentes|get_item:key %}checked{% else %}no checked{% endif %}
                             </small>
                             
                             <!-- El input checkbox -->
                             <input type="checkbox" name="disponibilidades" value="{{ dia.id }}-{{ franja.id }}"
-                            id="dia_{{ dia.id }}_franja_{{ franja.id }}"
-                            {% if combinaciones_existentes|get_item:dia.id|stringformat:"s"|add:"-"|add:franja.id %} checked {% endif %}>
-                                                                  </td>
+                                id="dia_{{ dia.id }}_franja_{{ franja.id }}"
+                                {% if combinaciones_existentes|get_item:key %} checked {% endif %}>
+                            
+                            {% endwith %}
+                        </td>
                     {% endfor %}
                 </tr>
             {% endfor %}
@@ -52,6 +57,20 @@
 
     <button type="submit" class="btn btn-success">Guardar Disponibilidades</button>
 </form>
+
+<!-- Lista de disponibilidades seleccionadas -->
+<h2>Disponibilidades Seleccionadas</h2>
+<ul>
+    {% for dia in dias_semana %}
+        {% for franja in franjas_horarias %}
+            {% with dia.id|generate_key:franja.id as key %}
+                {% if combinaciones_existentes|get_item:key %}
+                    <li>{{ dia.nombre }} - {{ franja.nombre }}</li>
+                {% endif %}
+            {% endwith %}
+        {% endfor %}
+    {% endfor %}
+</ul>
 
 <!-- Depuración: Ver todo el contenido del diccionario combinaciones_existentes -->
 <pre>{{ combinaciones_existentes }}</pre>
