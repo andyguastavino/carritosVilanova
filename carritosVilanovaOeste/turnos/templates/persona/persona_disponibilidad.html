@@ -2,6 +2,30 @@
 
 {% block content %}
 {% load custom_filters %}
+<style>
+    .checkbox-ocupando-td {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: block;
+}
+
+.checkbox-container {
+    display: flex;
+    justify-content: center; /* Centra el contenido */
+    align-items: center; /* Alinea verticalmente */
+    height: 100%;
+    width: 100%;
+}
+td {
+    padding: 0;  /* Elimina cualquier espacio alrededor del contenido */
+    height: 50px;  /* Puedes ajustar la altura según necesites */
+    text-align: center;  /* Centra el checkbox dentro del td */
+}
+
+
+</style>
 <h1>Gestionar Disponibilidad de {{ persona.nombre }}</h1>
 
 <!-- Mensajes de éxito -->
@@ -34,18 +58,15 @@
                             <!-- Generar la clave utilizando el filtro personalizado -->
                             {% with dia.id|generate_key:franja.id as key %}
                             
-                            <!-- Depuración: Mostrar información sobre la combinación y el estado del checkbox -->
-                            <small>
-                                Clave: {{ key }}<br>
-                                Valor en combinaciones_existentes: {{ combinaciones_existentes|get_item:key }}
-                                <br>
-                                Estado del checkbox: {% if combinaciones_existentes|get_item:key %}checked{% else %}no checked{% endif %}
-                            </small>
                             
                             <!-- El input checkbox -->
-                            <input type="checkbox" name="disponibilidades" value="{{ dia.id }}-{{ franja.id }}"
-                                id="dia_{{ dia.id }}_franja_{{ franja.id }}"
-                                {% if combinaciones_existentes|get_item:key %} checked {% endif %}>
+                             <div class="checkbox-container">
+
+                             
+                                <input type="checkbox" name="disponibilidades" value="{{ dia.id }}-{{ franja.id }}"
+                                    id="dia_{{ dia.id }}_franja_{{ franja.id }}" class="checkbox-ocupando-td"
+                                    {% if combinaciones_existentes|get_item:key %} checked {% endif %}>
+                            </div>
                             
                             {% endwith %}
                         </td>
@@ -71,9 +92,6 @@
         {% endfor %}
     {% endfor %}
 </ul>
-
-<!-- Depuración: Ver todo el contenido del diccionario combinaciones_existentes -->
-<pre>{{ combinaciones_existentes }}</pre>
 
 <!-- Botón para volver a la lista de personas -->
 <a href="{% url 'persona_list' %}" class="btn btn-secondary">Volver a la lista de personas</a>
