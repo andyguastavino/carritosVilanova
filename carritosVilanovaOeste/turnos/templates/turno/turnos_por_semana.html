@@ -34,7 +34,62 @@
     .edit-turno:hover, .create-turno:hover {
         background-color: #0056b3;
     }
+
+    .franja-1, .turnos-franja-1 {
+        background-color: #ffffff;
+        font-weight: bolder;
+        text-align: center; 
+    }
+    .franja-2, .turnos-franja-2 {
+        background-color: #ff9900;
+        font-weight: bolder;
+        text-align: center; 
+    }
+    .franja-3, .turnos-franja-3 {
+        background-color: #dac7b3;
+        font-weight: bolder;
+        text-align: center; 
+    }
+    .franja-4, .turnos-franja-4 {
+        background-color: #fff3cd;
+        font-weight: bolder;
+        text-align: center; 
+    }
+    .sitio-1 {
+        background-color: #93c47d; /* Verde */
+        font-weight: bolder;
+        text-align: center;
+
+    }
+    .sitio-2 {
+        background-color: #c9daf8; /* Celeste */
+        font-weight: bolder;
+        text-align: center;
+     
+    }
+   
+    .sitio-3 {
+        background-color: #7f6000; /* Marrón */
+        font-weight: bolder;
+        text-align: center;
+        
+    }
+    .sitio-4 {
+        background-color: #ffd966; /* Ocre */
+        font-weight: bolder;
+        text-align: center;
+        
+    }
+    th {
+    background-color: #a2c4c9;
+    font-weight: bolder;
+    text-align: center;
+   
+}
+
 </style>
+
+
 
 <div class="navigation">
     <a href="{% url 'turnos_por_semana' prev_year prev_month %}">&laquo; {{ prev_month|month_name_filter }} {{ prev_year }}</a>
@@ -59,11 +114,11 @@
                 {% for franja, dias in franjas.items %}
                     <tr>
                         {% if forloop.first %}
-                            <td rowspan="{{ franjas|length }}">{{ sitio.nombre }}</td>
+                            <td rowspan="{{ franjas|length }}" class="sitio-{{ sitio.id }}">{{ sitio.nombre }}</td>
                         {% endif %}
-                        <td>{{ franja.nombre }}</td>
+                        <td class="franja-{{ franja.id }}">{{ franja.nombre }}</td>
                         {% for dia_key, dia_info in dias.items %}
-                            <td>
+                            <td class="turnos-franja-{{ franja.id }}">
                                 {% if dia_info.turnos %}
                                     {% for turno in dia_info.turnos %}
                                         <strong>Capitán:</strong> {{ turno.capitan }}<br>

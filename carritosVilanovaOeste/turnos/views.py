@@ -490,3 +490,4 @@ def persona_disponibilidad(request, pk):
         'disponibilidades': disponibilidades,
         'combinaciones_existentes': combinaciones_existentes,  # Pasamos el diccionario de combinaciones
     })
+
