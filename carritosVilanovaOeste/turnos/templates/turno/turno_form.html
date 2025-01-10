@@ -5,7 +5,32 @@
 
   <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+    
+    <div>
+      <label for="{{ form.fecha.id_for_label }}">Fecha:</label>
+      {{ form.fecha }}
+    </div>
+    
+    <div>
+      <label for="{{ form.franja_horaria.id_for_label }}">Franja Horaria:</label>
+      {{ form.franja_horaria }}
+    </div>
+    
+    <div>
+      <label for="{{ form.sitio.id_for_label }}">Sitio:</label>
+      {{ form.sitio }}
+    </div>
+    
+    <div>
+      <label for="{{ form.capitan.id_for_label }}">Capitán:</label>
+      {{ form.capitan }}
+    </div>
+
+    <div>
+      <label for="{{ form.asistentes.id_for_label }}">Asistentes:</label>
+      {{ form.asistentes }}
+    </div>
+
     <button type="submit">Guardar</button>
   </form>
 

@@ -179,42 +179,121 @@ class TurnoDetailView(DetailView):
     model = Turno
     template_name = 'turno/turno_detail.html'
     
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponseBadRequest
+from django.urls import reverse_lazy
+from .models import Persona, FranjaHoraria, Sitio
 from .forms import TurnoForm
+
+from datetime import datetime
+
+from datetime import datetime
+
+from django.http import HttpResponseBadRequest
+from datetime import datetime
 
 class TurnoCreateView(CreateView):
     model = Turno
     form_class = TurnoForm
     template_name = 'turno/turno_form.html'
-    success_url = reverse_lazy('turno_list')  # Redirige a la lista de turnos
-    
+    success_url = reverse_lazy('turno_list')
+
     def get_initial(self):
         initial = super().get_initial()
-        fecha_param = self.request.GET.get('fecha')  # Capturamos el parámetro 'fecha' de la URL
-        sitio_param = self.request.GET.get('sitio')  # Capturamos el parámetro 'sitio' de la URL
-        franja_param = self.request.GET.get('franja')  # Capturamos el parámetro 'franja' de la URL
+        
+        fecha_param = self.request.GET.get('fecha')
+        print(f"esta es la fecha recibida: {fecha_param}")
+        sitio_param = self.request.GET.get('sitio')
+        print(f"este es el sitio recibido: {sitio_param}")
+        franja_param = self.request.GET.get('franja')
+        print(f"esta es la franja recibida: {franja_param}")
+        
+        # Set initial values for fields (fecha, sitio, franja_horaria)
         if fecha_param:
             try:
-                # Convertimos el parámetro de fecha a un objeto de tipo date
-                initial['fecha'] = fecha_param
+                fecha = datetime.strptime(fecha_param, '%Y-%m-%d').date()
+                initial['fecha'] = fecha
             except ValueError:
-                return HttpResponseBadRequest("Fecha inválida")  # Manejo de error si la fecha no es válida
-          # Manejo del parámetro 'sitio'
+                return HttpResponseBadRequest("Fecha inválida")
+
         if sitio_param:
             try:
-                # Intentar obtener el objeto Sitio relacionado
                 sitio = Sitio.objects.get(id=sitio_param)
-                initial['sitio'] = sitio  # Asignar el sitio al campo correspondiente
+                initial['sitio'] = sitio
             except Sitio.DoesNotExist:
-                return HttpResponseBadRequest("Sitio no válido")  # Manejo de error si el sitio no existe
+                return HttpResponseBadRequest("Sitio no válido")
+
         if franja_param:
             try:
-                # Intentar obtener el objeto FranjaHoraria relacionado
                 franja = FranjaHoraria.objects.get(id=franja_param)
-                initial['franja_horaria'] = franja  # Asignar la franja al campo correspondiente
+                initial['franja_horaria'] = franja
             except FranjaHoraria.DoesNotExist:
                 return HttpResponseBadRequest("Franja horaria no válida")
         
+        # Filtrar capitanes y asistentes disponibles en función del día y la franja horaria
+        
+        franja_horaria_id = self.request.GET.get('franja')
+        dia_semana_id = self.request.GET.get('dia_semana')
+
+        if dia_semana_id and franja_horaria_id:
+            franja_horaria = FranjaHoraria.objects.get(id=franja_horaria_id)
+            disponibilidades = Disponibilidad.objects.filter(
+                dia_semana_id=dia_semana_id,
+                franja_horaria=franja_horaria,
+                activo=True
+            )
+            print("Disponibilidades encontradas DESDE VIEW:", disponibilidades.count())
+
+            personas_ids = disponibilidades.values_list('persona_id', flat=True)
+            print("Personas disponibles (IDs) DESDE VIEW:", list(personas_ids))
+
+            # Filtrar los capitanes y asistentes disponibles
+            capitanes_disponibles = Persona.objects.filter(
+                id__in=personas_ids,
+                es_capitan=True
+            ).distinct()
+            print("Capitanes disponibles DESDE VIEW:", capitanes_disponibles)
+
+            asistentes_disponibles = Persona.objects.filter(
+                id__in=personas_ids
+            ).distinct()
+            print("Asistentes disponibles DESDE VIEW:", asistentes_disponibles)
+
+            # Pasar estos querysets filtrados al initial
+            initial['capitanes_disponibles'] = capitanes_disponibles
+            initial['asistentes_disponibles'] = asistentes_disponibles
+
         return initial
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.form_class(initial=self.get_initial())
+         # Añadir los querysets filtrados al contexto
+        if 'capitanes_disponibles' in self.get_initial():
+            context['form'].fields['capitan'].queryset = self.get_initial()['capitanes_disponibles']
+        if 'asistentes_disponibles' in self.get_initial():
+            context['form'].fields['asistentes'].queryset = self.get_initial()['asistentes_disponibles']
+        
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        
+        sitio_id = self.request.GET.get('sitio')
+        franja_horaria_id = self.request.GET.get('franja')
+        dia_semana_id = self.request.GET.get('dia_semana')
+
+        kwargs['sitio_id'] = sitio_id
+        kwargs['franja_horaria_id'] = franja_horaria_id
+        kwargs['dia_semana_id'] = dia_semana_id
+        
+        # Pasar los querysets filtrados de capitanes y asistentes
+        kwargs['capitanes_disponibles'] = self.get_initial().get('capitanes_disponibles')
+        kwargs['asistentes_disponibles'] = self.get_initial().get('asistentes_disponibles')
+
+        return kwargs
+
+
 
 class TurnoUpdateView(UpdateView):
     model = Turno
