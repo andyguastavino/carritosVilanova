@@ -297,9 +297,75 @@ class TurnoCreateView(CreateView):
 
 class TurnoUpdateView(UpdateView):
     model = Turno
-    fields = '__all__'
+    form_class = TurnoForm
     template_name = 'turno/turno_form.html'
     success_url = reverse_lazy('turno_list')
+
+    def get_initial(self):
+        initial = super().get_initial()
+
+        turno = self.object  # Obtenemos el turno actual que se está editando
+        initial['fecha'] = turno.fecha
+        initial['sitio'] = turno.sitio
+        initial['franja_horaria'] = turno.franja_horaria
+
+        # Filtrar capitanes y asistentes disponibles en función del turno
+        franja_horaria = turno.franja_horaria
+        dia_semana = turno.fecha.weekday() + 1  # weekday() devuelve 0 para lunes, sumamos 1
+
+        disponibilidades = Disponibilidad.objects.filter(
+            dia_semana_id=dia_semana,
+            franja_horaria=franja_horaria,
+            activo=True
+        )
+        print("Disponibilidades encontradas DESDE UPDATE VIEW:", disponibilidades.count())
+
+        personas_ids = disponibilidades.values_list('persona_id', flat=True)
+        print("Personas disponibles (IDs) DESDE UPDATE VIEW:", list(personas_ids))
+
+        capitanes_disponibles = Persona.objects.filter(
+            id__in=personas_ids,
+            es_capitan=True
+        ).distinct()
+        print("Capitanes disponibles DESDE UPDATE VIEW:", capitanes_disponibles)
+
+        asistentes_disponibles = Persona.objects.filter(
+            id__in=personas_ids
+        ).distinct()
+        print("Asistentes disponibles DESDE UPDATE VIEW:", asistentes_disponibles)
+
+        initial['capitanes_disponibles'] = capitanes_disponibles
+        initial['asistentes_disponibles'] = asistentes_disponibles
+
+        return initial
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.form_class(instance=self.object, initial=self.get_initial())
+        
+        if 'capitanes_disponibles' in self.get_initial():
+            context['form'].fields['capitan'].queryset = self.get_initial()['capitanes_disponibles']
+        if 'asistentes_disponibles' in self.get_initial():
+            context['form'].fields['asistentes'].queryset = self.get_initial()['asistentes_disponibles']
+        
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+
+        turno = self.object  # El turno actual que se está editando
+        sitio_id = turno.sitio.id
+        franja_horaria_id = turno.franja_horaria.id
+        dia_semana = turno.fecha.weekday() + 1  # weekday() devuelve 0 para lunes, sumamos 1
+
+        kwargs['sitio_id'] = sitio_id
+        kwargs['franja_horaria_id'] = franja_horaria_id
+        kwargs['dia_semana_id'] = dia_semana
+
+        kwargs['capitanes_disponibles'] = self.get_initial().get('capitanes_disponibles')
+        kwargs['asistentes_disponibles'] = self.get_initial().get('asistentes_disponibles')
+
+        return kwargs
 
 class TurnoDeleteView(DeleteView):
     model = Turno
@@ -380,11 +446,13 @@ def turnos_por_semana(request, year, month):
         inicio_semana = fin_semana + timedelta(days=1)
 
     # Obtener todos los turnos del mes
+    print(f"Consultando turnos entre {inicio_mes} y {fin_mes}")
     turnos = Turno.objects.filter(fecha__range=(inicio_mes, fin_mes)).select_related(
         'franja_horaria', 'sitio', 'capitan'
     ).prefetch_related(
         Prefetch('asistentes')
     )
+    print(f"Turnos encontrados: {turnos}")
 
     # Organizar los turnos por semana, sitio y franja horaria
     datos_semanales = []
@@ -396,6 +464,9 @@ def turnos_por_semana(request, year, month):
             for franja in FranjaHoraria.objects.all():
                 dias = {}
                 for dia, fecha_dia in enumerate(dias_semana):  # Incluye las fechas exactas
+                    print(f"Buscando turnos para: {fecha_dia}")
+                    turnos_dia = turnos_semana.filter(fecha=fecha_dia)
+                    print(f"Turnos encontrados: {turnos_dia}")
                     if fecha_dia > fin_mes or fecha_dia < inicio_mes:
                         dias[dia] = {
                             'turnos': [],  # Día fuera del rango del mes

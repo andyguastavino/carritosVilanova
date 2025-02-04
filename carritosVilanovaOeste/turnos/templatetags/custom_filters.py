@@ -53,3 +53,8 @@ def generate_key(dia_id, franja_id):
     Genera una clave en el formato 'dia_id-franja_id'.
     """
     return f"{dia_id}-{franja_id}"
+
+
+@register.filter
+def sunday_as_seven(day):
+    return 7 if day == 0 else day

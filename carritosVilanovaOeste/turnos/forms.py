@@ -41,7 +41,8 @@ class TurnoForm(forms.ModelForm):
         fields = ['fecha', 'franja_horaria', 'sitio', 'capitan', 'asistentes', 'activo']
         widgets = {
             'asistentes': forms.CheckboxSelectMultiple(),
-            'fecha': forms.DateInput(format='%d/%m/%Y', attrs={'placeholder': 'DD/MM/YYYY'}),
+            'fecha': forms.DateInput(attrs={'type': 'date'}),
+
         }
         input_formats = {
             'fecha': ['%d/%m/%Y'],  # Formato que aceptamos

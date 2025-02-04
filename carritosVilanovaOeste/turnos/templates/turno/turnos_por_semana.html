@@ -99,6 +99,7 @@
 
 {% for inicio, fin, dias_semana, sitios in datos_semanales %}
     <h2>Semana del {{ inicio|date:"d" }} al {{ fin|date:"d" }}</h2>
+    <pre>{{datos_semanales}}</pre>
     <table>
         <thead>
             <tr>
@@ -121,6 +122,7 @@
                             <td class="turnos-franja-{{ franja.id }}">
                                 {% if dia_info.turnos %}
                                     {% for turno in dia_info.turnos %}
+                                        <strong>fecha</strong> {{ turno.fecha }}<br>
                                         <strong>Capitán:</strong> {{ turno.capitan }}<br>
                                         <strong>Asistentes:</strong><br>
                                         {% for asistente in turno.asistentes.all %}
@@ -129,11 +131,15 @@
                                         <a href="{% url 'turno_update' turno.id %}">
                                             <button class="edit-turno">Editar Turno</button>
                                         </a>
+                                           <!-- Botón Eliminar Turno (ahora redirige a la vista de confirmación) -->
+                                        <a href="{% url 'turno_delete' turno.id %}">
+                                            <button class="delete-turno">Eliminar Turno</button>
+                                        </a>
                                         <hr>
                                     {% endfor %}
                                 {% else %}
                                     <span>No hay turnos</span><br>
-                                    <a href="{% url 'turno_create' %}?fecha={{ dia_info.fecha|date:'Y-m-d' }}&sitio={{ sitio.id }}&franja={{ franja.id }}&dia_semana={{ dia_info.fecha|date:'w' }}">
+                                    <a href="{% url 'turno_create' %}?fecha={{ dia_info.fecha|date:'Y-m-d' }}&sitio={{ sitio.id }}&franja={{ franja.id }}&dia_semana={% if dia_info.fecha|date:'w' == '0' %}7{% else %}{{ dia_info.fecha|date:'w' }}{% endif %}">
                                         <button class="create-turno">Crear Turno</button>
                                     </a>
                                 {% endif %}
