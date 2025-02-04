@@ -93,7 +93,11 @@
     text-align: center;
     
 }
-
+.capitan-repetido {
+        background-color: red !important;
+        color: white;
+        font-weight: bold;
+    }
 
 </style>
 
@@ -129,20 +133,27 @@
                             <td class="turnos-franja-{{ franja.id }}">
                                 {% if dia_info.turnos %}
                                     {% for turno in dia_info.turnos %}
-                                        <strong>Capitán:</strong> {{ turno.capitan }}<br>
-                                        <strong>Asistentes:</strong><br>
-                                        {% for asistente in turno.asistentes.all %}
-                                            - {{ asistente }}<br>
-                                        {% endfor %}
-                                        <a href="{% url 'turno_update' turno.id %}">
-                                            <button class="edit-turno">Editar Turno</button>
-                                        </a>
-                                           <!-- Botón Eliminar Turno (ahora redirige a la vista de confirmación) -->
-                                        <a href="{% url 'turno_delete' turno.id %}">
-                                            <button class="delete-turno">Eliminar Turno</button>
-                                        </a>
-                                        <hr>
+                                        <div class="turno" 
+                                            data-fecha="{{ dia_info.fecha|date:'Y-m-d' }}" 
+                                            data-franja="{{ franja.id }}" 
+                                            data-capitan="{{ turno.capitan }}" 
+                                            data-asistentes="{% for asistente in turno.asistentes.all %}{{ asistente }},{% endfor %}">
+                                            <strong>Capitán:</strong> {{ turno.capitan }}<br>
+                                            <strong>Asistentes:</strong><br>
+                                            {% for asistente in turno.asistentes.all %}
+                                                - {{ asistente }}<br>
+                                            {% endfor %}
+                                            <a href="{% url 'turno_update' turno.id %}">
+                                                <button class="edit-turno">Editar Turno</button>
+                                            </a>
+                                            <a href="{% url 'turno_delete' turno.id %}">
+                                                <button class="delete-turno">Eliminar Turno</button>
+                                            </a>
+                                            <hr>
+                                        </div>
                                     {% endfor %}
+                            
+                                                            
                                 {% else %}
                                     
                                     <!--Conidicional si el dia es de lunes a viernes o domingo-->
@@ -195,4 +206,86 @@
         });
     });
 </script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    function actualizarTurnos() {
+        let turnosMap = {}; // 🔥 Reiniciamos la estructura en cada actualización
+
+        document.querySelectorAll(".turno").forEach(div => {
+            let fecha = div.getAttribute("data-fecha");
+            let franja = div.getAttribute("data-franja");
+            let capitan = div.getAttribute("data-capitan");
+            let asistentes = div.getAttribute("data-asistentes").split(',').filter(a => a.trim() !== "");
+
+            let esRepetidoEnMismoTurno = false; // 🚨 Nuevo flag para repeticiones dentro del mismo turno
+
+            // 🚨 **Verificar si el capitán también está como asistente en su propio turno**
+            if (asistentes.includes(capitan)) {
+                esRepetidoEnMismoTurno = true;
+            }
+
+            // 🚨 **Verificar si algún asistente está repetido dentro del mismo turno**
+            let asistentesSet = new Set();
+            asistentes.forEach(asistente => {
+                if (asistentesSet.has(asistente)) {
+                    esRepetidoEnMismoTurno = true;
+                }
+                asistentesSet.add(asistente);
+            });
+
+            // 🔥 **Si hay repetición dentro del mismo turno, solo marcar este turno**
+            if (esRepetidoEnMismoTurno) {
+                div.classList.add("capitan-repetido");
+            } else {
+                div.classList.remove("capitan-repetido");
+            }
+
+            if (fecha && franja) {
+                let key = `${fecha}-${franja}`;
+
+                // Si la clave aún no existe, la inicializamos
+                if (!turnosMap[key]) {
+                    turnosMap[key] = { capitanes: new Set(), asistentes: new Set(), elementos: [] };
+                }
+
+                let turnoInfo = turnosMap[key];
+                let esRepetidoEnFranja = false; // 🚨 Nuevo flag para repeticiones en la misma franja
+
+                // 🚨 **Verificar si el capitán o asistentes están repetidos en otros turnos de la misma franja**
+                if (turnoInfo.capitanes.has(capitan) || turnoInfo.asistentes.has(capitan)) {
+                    esRepetidoEnFranja = true;
+                }
+
+                asistentes.forEach(asistente => {
+                    if (turnoInfo.capitanes.has(asistente) || turnoInfo.asistentes.has(asistente)) {
+                        esRepetidoEnFranja = true;
+                    }
+                });
+
+                // 🔥 **Si hay repetición en otros turnos de la franja, solo marcar este turno**
+                if (esRepetidoEnFranja) {
+                    div.classList.add("capitan-repetido");
+                }
+
+                // Guardamos los datos en la estructura
+                turnoInfo.capitanes.add(capitan);
+                asistentes.forEach(asistente => turnoInfo.asistentes.add(asistente));
+                turnoInfo.elementos.push(div);
+            }
+        });
+    }
+
+    // Llamamos a la función al cargar la página
+    actualizarTurnos();
+
+    // Opcional: Si hay cambios en el DOM (como después de editar un turno), actualizar la validación
+    document.addEventListener("click", function (e) {
+        if (e.target.classList.contains("edit-turno") || e.target.classList.contains("create-turno")) {
+            setTimeout(actualizarTurnos, 500); // 🔥 Esperamos medio segundo para que los cambios se reflejen
+        }
+    });
+});
+
+</script>
+
 {% endblock %}
