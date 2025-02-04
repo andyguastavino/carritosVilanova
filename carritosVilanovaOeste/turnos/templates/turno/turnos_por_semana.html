@@ -166,6 +166,10 @@
                                         <div class="turno-no-activo">
                                             <span>NO ACTIVO</span>
                                         </div>
+                                    {%elif dia_info.fecha|date:'w' > '0' and dia_info.fecha|date:'w' < '6' and sitio.id > 2%}
+                                        <div class="turno-no-activo">
+                                            <span>NO ACTIVO</span>
+                                        </div>
                                     
                                     {%else%}
                                     
