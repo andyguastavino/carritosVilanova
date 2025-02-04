@@ -86,6 +86,14 @@
     text-align: center;
    
 }
+.turno-no-activo {
+    background-color: rgb(53, 52, 52); /* Gris claro */
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    
+}
+
 
 </style>
 
@@ -99,7 +107,6 @@
 
 {% for inicio, fin, dias_semana, sitios in datos_semanales %}
     <h2>Semana del {{ inicio|date:"d" }} al {{ fin|date:"d" }}</h2>
-    <pre>{{datos_semanales}}</pre>
     <table>
         <thead>
             <tr>
@@ -122,7 +129,6 @@
                             <td class="turnos-franja-{{ franja.id }}">
                                 {% if dia_info.turnos %}
                                     {% for turno in dia_info.turnos %}
-                                        <strong>fecha</strong> {{ turno.fecha }}<br>
                                         <strong>Capitán:</strong> {{ turno.capitan }}<br>
                                         <strong>Asistentes:</strong><br>
                                         {% for asistente in turno.asistentes.all %}
@@ -138,10 +144,35 @@
                                         <hr>
                                     {% endfor %}
                                 {% else %}
-                                    <span>No hay turnos</span><br>
-                                    <a href="{% url 'turno_create' %}?fecha={{ dia_info.fecha|date:'Y-m-d' }}&sitio={{ sitio.id }}&franja={{ franja.id }}&dia_semana={% if dia_info.fecha|date:'w' == '0' %}7{% else %}{{ dia_info.fecha|date:'w' }}{% endif %}">
-                                        <button class="create-turno">Crear Turno</button>
-                                    </a>
+                                    
+                                    <!--Conidicional si el dia es de lunes a viernes o domingo-->
+                                    {% if dia_info.fecha|date:'w' != '6' and franja.id == 2 %}
+                                        <div class="turno-no-activo">
+                                            <span>NO ACTIVO</span>
+                                        </div>
+                                    {%elif dia_info.fecha|date:'w' == '2' and franja.id == 3%}
+                                        <div class="turno-no-activo">
+                                            <span>NO ACTIVO</span>
+                                        </div>
+                                    {%elif dia_info.fecha|date:'w' == '5' and franja.id == 1%}
+                                        <div class="turno-no-activo">
+                                            <span>NO ACTIVO</span>
+                                        </div>
+                                    {%elif dia_info.fecha|date:'w' == '6' and franja.id == 3%}
+                                        <div class="turno-no-activo">
+                                            <span>NO ACTIVO</span>
+                                        </div>
+                                    {%elif dia_info.fecha|date:'w' == '0' and franja.id == 3%}
+                                        <div class="turno-no-activo">
+                                            <span>NO ACTIVO</span>
+                                        </div>
+                                    
+                                    {%else%}
+                                    
+                                        <a href="{% url 'turno_create' %}?fecha={{ dia_info.fecha|date:'Y-m-d' }}&sitio={{ sitio.id }}&franja={{ franja.id }}&dia_semana={% if dia_info.fecha|date:'w' == '0' %}7{% else %}{{ dia_info.fecha|date:'w' }}{% endif %}">
+                                            <button class="create-turno">Crear Turno</button>
+                                        </a>
+                                    {% endif %}    
                                 {% endif %}
                             </td>
                         {% endfor %}
@@ -151,4 +182,13 @@
         </tbody>
     </table>
 {% endfor %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll("td").forEach(td => {
+            if (td.innerText.trim() === "NO ACTIVO") {
+                td.classList.add("turno-no-activo");
+            }
+        });
+    });
+</script>
 {% endblock %}
