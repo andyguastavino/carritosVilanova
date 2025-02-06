@@ -12,7 +12,7 @@
     th, td {
         border: 1px solid #ddd;
         padding: 10px;
-        text-align: left;
+        text-align: center;
     }
     th {
         background-color: #f4f4f4;
@@ -87,10 +87,11 @@
    
 }
 .turno-no-activo {
-    background-color: rgb(53, 52, 52); /* Gris claro */
-    color: white;
+    background-color: #d9d9d9; /* Gris claro */
+    color: black;
     font-weight: bold;
     text-align: center;
+    border: 1px solid black;
     
 }
 .capitan-repetido {
@@ -98,6 +99,8 @@
         color: white;
         font-weight: bold;
     }
+
+
 
 </style>
 
@@ -138,8 +141,8 @@
                                             data-franja="{{ franja.id }}" 
                                             data-capitan="{{ turno.capitan }}" 
                                             data-asistentes="{% for asistente in turno.asistentes.all %}{{ asistente }},{% endfor %}">
-                                            <strong>Capitán:</strong> {{ turno.capitan }}<br>
-                                            <strong>Asistentes:</strong><br>
+                                            {{ turno.capitan }}
+                                            <br>
                                             {% for asistente in turno.asistentes.all %}
                                                 - {{ asistente }}<br>
                                             {% endfor %}
@@ -179,6 +182,10 @@
                                         </div>
                                     {%elif dia_info.fecha|date:'w' > '0' and dia_info.fecha|date:'w' < '6' and sitio.id > 2%}
                                         <div class="turno-no-activo">
+                                            <span>NO ACTIVO</span>
+                                        </div>
+                                    {%elif dia_info.fecha|date:'w' == '6' and franja.id == 2 and sitio.id > 2 %}
+                                        <div class="turno-no-activo"> 
                                             <span>NO ACTIVO</span>
                                         </div>
                                     

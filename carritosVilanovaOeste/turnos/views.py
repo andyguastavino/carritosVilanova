@@ -464,9 +464,6 @@ def turnos_por_semana(request, year, month):
             for franja in FranjaHoraria.objects.all():
                 dias = {}
                 for dia, fecha_dia in enumerate(dias_semana):  # Incluye las fechas exactas
-                    print(f"Buscando turnos para: {fecha_dia}")
-                    turnos_dia = turnos_semana.filter(fecha=fecha_dia)
-                    print(f"Turnos encontrados: {turnos_dia}")
                     if fecha_dia > fin_mes or fecha_dia < inicio_mes:
                         dias[dia] = {
                             'turnos': [],  # Día fuera del rango del mes
