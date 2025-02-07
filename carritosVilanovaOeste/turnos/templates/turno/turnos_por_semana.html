@@ -4,23 +4,54 @@
 {% load custom_filters %}
 
 <style>
+    
+    .edit-turno, .delete-turno {
+    background-color: transparent;
+    border: none;
+    font-size: 1.5rem;  /* Ajusta el tamaño del icono */
+    cursor: pointer;
+    }
+    .participantes {
+    list-style: none;
+    padding: 0;
+    width: auto; /* Permite que se ajuste al contenido */
+    white-space: nowrap; /* Evita que los elementos li se rompan */
+    overflow-x: auto; /* Permite el desbordamiento horizontal si el contenido es demasiado largo */
+}
+
+.participantes li {
+    white-space: nowrap; /* No permite saltos de línea dentro de <li> */
+    padding: 0 5px; /* Añade un pequeño espacio entre los elementos */
+}
+td {
+    white-space: nowrap; /* Evita que el contenido de la celda se divida en varias líneas */
+}
+
+th {
+    white-space: nowrap; /* Asegura que los encabezados también no se dividan */
+}
+
+
+
     .turno {
-        padding: 5px;
-        margin-bottom: 5px;
+        
         border-radius: 5px;
         border: 1px solid #ccc;
-        height: 250px;
+        width: 100%;
         
     }
     table {
-        border-collapse: collapse;
-        width: 100%;
+        
         margin-bottom: 20px;
+    }
+    thead {
+        border: 1px solid #ddd;
+        width: 500px;
     }
     th {
         border: 1px solid #ddd;
-        padding: 10px;
         text-align: center;
+        width: 500px;
     }
     th {
         background-color: #f4f4f4;
@@ -30,7 +61,7 @@
         justify-content: space-between;
         margin-bottom: 20px;
     }
-    .edit-turno, .create-turno {
+    .create-turno {
         background-color: #007bff;
         color: white;
         border: none;
@@ -42,26 +73,25 @@
     .edit-turno:hover, .create-turno:hover {
         background-color: #0056b3;
     }
+    .delete-turno:hover {
+        background-color: #dc3545;
+    }
 
     .franja-1, .turnos-franja-1 {
         background-color: #ffffff;
         font-weight: bolder;
-        text-align: center; 
     }
     .franja-2, .turnos-franja-2 {
         background-color: #ff9900;
         font-weight: bolder;
-        text-align: center; 
     }
     .franja-3, .turnos-franja-3 {
         background-color: #dac7b3;
         font-weight: bolder;
-        text-align: center; 
     }
     .franja-4, .turnos-franja-4 {
         background-color: #fff3cd;
         font-weight: bolder;
-        text-align: center; 
     }
     .sitio-1 {
         background-color: #93c47d; /* Verde */
@@ -108,6 +138,12 @@
         font-weight: bold;
     }
 
+    .acciones-turno {
+        display: flex;
+        justify-content: space-around;
+        
+    }
+
 
 
 </style>
@@ -149,17 +185,26 @@
                                             data-franja="{{ franja.id }}" 
                                             data-capitan="{{ turno.capitan }}" 
                                             data-asistentes="{% for asistente in turno.asistentes.all %}{{ asistente }},{% endfor %}">
-                                            {{ turno.capitan }}
-                                            <br>
-                                            {% for asistente in turno.asistentes.all %}
-                                                - {{ asistente }}<br>
-                                            {% endfor %}
-                                            <a href="{% url 'turno_update' turno.id %}">
-                                                <button class="edit-turno">Editar Turno</button>
-                                            </a>
-                                            <a href="{% url 'turno_delete' turno.id %}">
-                                                <button class="delete-turno">Eliminar Turno</button>
-                                            </a>
+                                            <ul class="participantes">
+                                                    <li>{{ turno.capitan }}</li>
+                                                {% for asistente in turno.asistentes.all %}
+                                                    <li>{{ asistente }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                            <div class="acciones-turno">
+
+                                            
+                                                <a href="{% url 'turno_update' turno.id %}">
+                                                    <button class="edit-turno">
+                                                        <i class="bi bi-pencil"></i>  <!-- Ícono de editar -->
+                                                    </button>
+                                                </a>
+                                                <a href="{% url 'turno_delete' turno.id %}">
+                                                    <button class="delete-turno">
+                                                        <i class="bi bi-trash"></i>  <!-- Ícono de eliminar -->
+                                                    </button>
+                                                </a>
+                                            </div>
                                         </div>
                                     {% endfor %}
                             
@@ -211,48 +256,7 @@
         </tbody>
     </table>
 {% endfor %}
-<button class="btn btn-secondary" id="copiar-turnos">Copiar Turnos al Mes Siguiente</button>
-
-<div id="confirmacion-copia" style="display: none;">
-    <p>¿Está seguro de que desea copiar los turnos del mes pasado al mes siguiente?</p>
-    <button id="confirmar-copia">Sí</button>
-    <button id="cancelar-copia">No</button>
-</div>
-<script>
-    document.getElementById("copiar-turnos").addEventListener("click", function() {
-        document.getElementById("confirmacion-copia").style.display = "block";
-    });
-
-    document.getElementById("confirmar-copia").addEventListener("click", function() {
-        // Aquí se hace la llamada AJAX para copiar los turnos
-        fetch("/copiar-turnos/", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}'
-            },
-            body: JSON.stringify({
-                mes_origen: {{ mes_origen }},
-                ano_origen: {{ ano_origen }},
-                mes_destino: {{ mes_destino }},
-                ano_destino: {{ ano_destino }}
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            alert(data.message);
-            location.reload();  // Recargar la página para ver los cambios
-        })
-        .catch(error => {
-            alert(error.message);
-        });
-    });
-
-    document.getElementById("cancelar-copia").addEventListener("click", function() {
-        document.getElementById("confirmacion-copia").style.display = "none";
-    });
-    </script>
-
+    
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             document.querySelectorAll("td").forEach(td => {

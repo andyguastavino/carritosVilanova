@@ -7,7 +7,7 @@ from .views import (
     SitioListView, SitioDetailView, SitioCreateView, SitioUpdateView, SitioDeleteView,
     TurnoListView, TurnoDetailView, TurnoCreateView, TurnoUpdateView, TurnoDeleteView,
     DisponibilidadListView, DisponibilidadDetailView, DisponibilidadCreateView, DisponibilidadUpdateView, DisponibilidadDeleteView,
-    DibujarCalendario, horario_view,
+    DibujarCalendario, horario_view, 
 )
 from . import views
 
@@ -70,4 +70,5 @@ urlpatterns = [
     
     #Ruta para gestionar disponibilidades de una persona:
     path('persona/<int:pk>/disponibilidad/', views.persona_disponibilidad, name='persona_disponibilidad'),
+
 ]
