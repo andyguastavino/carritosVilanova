@@ -4,6 +4,11 @@
 {% load custom_filters %}
 
 <style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        border: 1px solid #ddd;
+    }
     
     .edit-turno, .delete-turno {
     background-color: transparent;
@@ -36,7 +41,6 @@ th {
     .turno {
         
         border-radius: 5px;
-        border: 1px solid #ccc;
         width: 100%;
         
     }
@@ -70,11 +74,22 @@ th {
         border-radius: 5px;
         cursor: pointer;
     }
-    .edit-turno:hover, .create-turno:hover {
-        background-color: #0056b3;
+    .edit-turno:hover {
+        background-color: purple;
+        color: white;
+        border-radius: 25px;
     }
+
+    .create-turno:hover {
+        background-color: #0056b3;
+        color: white;
+        }
+
+    
     .delete-turno:hover {
         background-color: #dc3545;
+        color: white;
+        border-radius: 25px;
     }
 
     .franja-1, .turnos-franja-1 {
@@ -129,7 +144,7 @@ th {
     color: black;
     font-weight: bold;
     text-align: center;
-    border: 1px solid black;
+    
     
 }
 .capitan-repetido {
@@ -140,7 +155,13 @@ th {
 
     .acciones-turno {
         display: flex;
-        justify-content: space-around;
+        justify-content: start;
+        
+        
+    }
+    td {
+        border: 1px solid black;
+        padding: 2px;
         
     }
 
@@ -170,87 +191,94 @@ th {
         </thead>
         <tbody>
             {% for sitio, franjas in sitios.items %}
+            
                 {% for franja, dias in franjas.items %}
-                    <tr>
-                        {% if forloop.first %}
-                            <td rowspan="{{ franjas|length }}" class="sitio-{{ sitio.id }}">{{ sitio.nombre }}</td>
-                        {% endif %}
-                        <td class="franja-{{ franja.id }}">{{ franja.nombre }}</td>
-                        {% for dia_key, dia_info in dias.items %}
-                            <td class="turnos-franja-{{ franja.id }}">
-                                {% if dia_info.turnos %}
-                                    {% for turno in dia_info.turnos %}
-                                        <div class="turno" 
-                                            data-fecha="{{ dia_info.fecha|date:'Y-m-d' }}" 
-                                            data-franja="{{ franja.id }}" 
-                                            data-capitan="{{ turno.capitan }}" 
-                                            data-asistentes="{% for asistente in turno.asistentes.all %}{{ asistente }},{% endfor %}">
-                                            <ul class="participantes">
-                                                    <li>{{ turno.capitan }}</li>
-                                                {% for asistente in turno.asistentes.all %}
-                                                    <li>{{ asistente }}</li>
-                                                {% endfor %}
-                                            </ul>
-                                            <div class="acciones-turno">
-
-                                            
-                                                <a href="{% url 'turno_update' turno.id %}">
-                                                    <button class="edit-turno">
-                                                        <i class="bi bi-pencil"></i>  <!-- Ícono de editar -->
-                                                    </button>
-                                                </a>
-                                                <a href="{% url 'turno_delete' turno.id %}">
-                                                    <button class="delete-turno">
-                                                        <i class="bi bi-trash"></i>  <!-- Ícono de eliminar -->
-                                                    </button>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    {% endfor %}
-                            
-                                                            
+                    {% if sitio.id <= 2 or franja.id == 1 %}
+                        <tr>
+                            {% if forloop.first%}
+                                {% if sitio.id <= 2 %}
+                                    <td rowspan="{{ franjas|length }}" class="sitio-{{ sitio.id }}">{{ sitio.nombre }}</td>
                                 {% else %}
-                                    
-                                    <!--Conidicional si el dia es de lunes a viernes o domingo-->
-                                    {% if dia_info.fecha|date:'w' != '6' and franja.id == 2 %}
-                                        <div class="turno-no-activo">
-                                            <span>NO ACTIVO</span>
-                                        </div>
-                                    {%elif dia_info.fecha|date:'w' == '2' and franja.id == 3%}
-                                        <div class="turno-no-activo">
-                                            <span>NO ACTIVO</span>
-                                        </div>
-                                    {%elif dia_info.fecha|date:'w' == '5' and franja.id == 1%}
-                                        <div class="turno-no-activo">
-                                            <span>NO ACTIVO</span>
-                                        </div>
-                                    {%elif dia_info.fecha|date:'w' == '6' and franja.id == 3%}
-                                        <div class="turno-no-activo">
-                                            <span>NO ACTIVO</span>
-                                        </div>
-                                    {%elif dia_info.fecha|date:'w' == '0' and franja.id == 3%}
-                                        <div class="turno-no-activo">
-                                            <span>NO ACTIVO</span>
-                                        </div>
-                                    {%elif dia_info.fecha|date:'w' > '0' and dia_info.fecha|date:'w' < '6' and sitio.id > 2%}
-                                        <div class="turno-no-activo">
-                                            <span>NO ACTIVO</span>
-                                        </div>
-                                    {%elif dia_info.fecha|date:'w' == '6' and franja.id == 2 and sitio.id > 2 %}
-                                        <div class="turno-no-activo"> 
-                                            <span>NO ACTIVO</span>
-                                        </div>
-                                    
-                                    {%else%}
-                                    
-                                        <a href="{% url 'turno_create' %}?fecha={{ dia_info.fecha|date:'Y-m-d' }}&sitio={{ sitio.id }}&franja={{ franja.id }}&dia_semana={% if dia_info.fecha|date:'w' == '0' %}7{% else %}{{ dia_info.fecha|date:'w' }}{% endif %}">
-                                            <button class="create-turno">Crear Turno</button>
-                                        </a>
-                                    {% endif %}    
+                                    <td rowspan="1" class="sitio-{{ sitio.id }}">{{ sitio.nombre }}</td>
                                 {% endif %}
-                            </td>
-                        {% endfor %}
-                    </tr>
+                            {% endif %}
+                            <td class="franja-{{ franja.id }}">{{ franja.nombre }}</td>
+                            {% for dia_key, dia_info in dias.items %}
+                                <td class="turnos-franja-{{ franja.id }}">
+                                    {% if dia_info.turnos %}
+                                        {% for turno in dia_info.turnos %}
+                                            <div class="turno" 
+                                                data-fecha="{{ dia_info.fecha|date:'Y-m-d' }}" 
+                                                data-franja="{{ franja.id }}" 
+                                                data-capitan="{{ turno.capitan }}" 
+                                                data-asistentes="{% for asistente in turno.asistentes.all %}{{ asistente }},{% endfor %}">
+                                                <ul class="participantes">
+                                                        <li>{{ turno.capitan }}</li>
+                                                    {% for asistente in turno.asistentes.all %}
+                                                        <li>{{ asistente }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                                <div class="acciones-turno">
+
+                                                
+                                                    <a href="{% url 'turno_update' turno.id %}">
+                                                        <button class="edit-turno">
+                                                            <i class="bi bi-pencil"></i>  <!-- Ícono de editar -->
+                                                        </button>
+                                                    </a>
+                                                    <a href="{% url 'turno_delete' turno.id %}">
+                                                        <button class="delete-turno">
+                                                            <i class="bi bi-trash"></i>  <!-- Ícono de eliminar -->
+                                                        </button>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                
+                                                                
+                                    {% else %}
+                                        
+                                        <!--Conidicional si el dia es de lunes a viernes o domingo-->
+                                        {% if dia_info.fecha|date:'w' != '6' and franja.id == 2 %}
+                                            <div class="turno-no-activo">
+                                                <span>NO ACTIVO</span>
+                                            </div>
+                                        {%elif dia_info.fecha|date:'w' == '2' and franja.id == 3%}
+                                            <div class="turno-no-activo">
+                                                <span>NO ACTIVO</span>
+                                            </div>
+                                        {%elif dia_info.fecha|date:'w' == '5' and franja.id == 1%}
+                                            <div class="turno-no-activo">
+                                                <span>NO ACTIVO</span>
+                                            </div>
+                                        {%elif dia_info.fecha|date:'w' == '6' and franja.id == 3%}
+                                            <div class="turno-no-activo">
+                                                <span>NO ACTIVO</span>
+                                            </div>
+                                        {%elif dia_info.fecha|date:'w' == '0' and franja.id == 3%}
+                                            <div class="turno-no-activo">
+                                                <span>NO ACTIVO</span>
+                                            </div>
+                                        {%elif dia_info.fecha|date:'w' > '0' and dia_info.fecha|date:'w' < '6' and sitio.id > 2%}
+                                            <div class="turno-no-activo">
+                                                <span>NO ACTIVO</span>
+                                            </div>
+                                        {%elif dia_info.fecha|date:'w' == '6' and franja.id == 2 and sitio.id > 2 %}
+                                            <div class="turno-no-activo"> 
+                                                <span>NO ACTIVO</span>
+                                            </div>
+                                        
+                                        {%else%}
+                                        
+                                            <a href="{% url 'turno_create' %}?fecha={{ dia_info.fecha|date:'Y-m-d' }}&sitio={{ sitio.id }}&franja={{ franja.id }}&dia_semana={% if dia_info.fecha|date:'w' == '0' %}7{% else %}{{ dia_info.fecha|date:'w' }}{% endif %}">
+                                                <button class="create-turno">Crear Turno</button>
+                                            </a>
+                                        {% endif %}    
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endif %}
                 {% endfor %}
             {% endfor %}
         </tbody>
