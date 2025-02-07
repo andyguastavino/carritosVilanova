@@ -4,12 +4,20 @@
 {% load custom_filters %}
 
 <style>
+    .turno {
+        padding: 5px;
+        margin-bottom: 5px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        height: 250px;
+        
+    }
     table {
         border-collapse: collapse;
         width: 100%;
         margin-bottom: 20px;
     }
-    th, td {
+    th {
         border: 1px solid #ddd;
         padding: 10px;
         text-align: center;
@@ -120,7 +128,7 @@
                 <th rowspan="2">Sitio</th>
                 <th rowspan="2">Franja Horaria</th>
                 {% for dia in dias_semana %}
-                    <th>{{ dia|date:"l"|dia_semana_es }}<br>{{ dia|date:"d/m" }}</th>
+                    <th>{{ dia|date:"l"|dia_semana_es }} {{ dia|date:"d/m" }}</th>
                 {% endfor %}
             </tr>
         </thead>
@@ -152,7 +160,6 @@
                                             <a href="{% url 'turno_delete' turno.id %}">
                                                 <button class="delete-turno">Eliminar Turno</button>
                                             </a>
-                                            <hr>
                                         </div>
                                     {% endfor %}
                             
@@ -204,14 +211,56 @@
         </tbody>
     </table>
 {% endfor %}
+<button class="btn btn-secondary" id="copiar-turnos">Copiar Turnos al Mes Siguiente</button>
+
+<div id="confirmacion-copia" style="display: none;">
+    <p>¿Está seguro de que desea copiar los turnos del mes pasado al mes siguiente?</p>
+    <button id="confirmar-copia">Sí</button>
+    <button id="cancelar-copia">No</button>
+</div>
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        document.querySelectorAll("td").forEach(td => {
-            if (td.innerText.trim() === "NO ACTIVO") {
-                td.classList.add("turno-no-activo");
-            }
+    document.getElementById("copiar-turnos").addEventListener("click", function() {
+        document.getElementById("confirmacion-copia").style.display = "block";
+    });
+
+    document.getElementById("confirmar-copia").addEventListener("click", function() {
+        // Aquí se hace la llamada AJAX para copiar los turnos
+        fetch("/copiar-turnos/", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                mes_origen: {{ mes_origen }},
+                ano_origen: {{ ano_origen }},
+                mes_destino: {{ mes_destino }},
+                ano_destino: {{ ano_destino }}
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            location.reload();  // Recargar la página para ver los cambios
+        })
+        .catch(error => {
+            alert(error.message);
         });
     });
+
+    document.getElementById("cancelar-copia").addEventListener("click", function() {
+        document.getElementById("confirmacion-copia").style.display = "none";
+    });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll("td").forEach(td => {
+                if (td.innerText.trim() === "NO ACTIVO") {
+                    td.classList.add("turno-no-activo");
+                }
+            });
+        });
 </script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {

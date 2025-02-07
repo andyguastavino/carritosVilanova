@@ -435,6 +435,9 @@ def turnos_por_semana(request, year, month):
 
     # Ajustar el inicio de la primera semana al lunes de esa semana
     inicio_primera_semana = inicio_mes - timedelta(days=dia_semana_inicio)
+    # Ajustar fin de la última semana al domingo siguiente más cercano
+    fin_ultima_semana = fin_mes + timedelta(days=(6 - fin_mes.weekday()))
+
 
     # Generar las semanas
     semanas = []
@@ -446,14 +449,12 @@ def turnos_por_semana(request, year, month):
         inicio_semana = fin_semana + timedelta(days=1)
 
     # Obtener todos los turnos del mes
-    print(f"Consultando turnos entre {inicio_mes} y {fin_mes}")
-    turnos = Turno.objects.filter(fecha__range=(inicio_mes, fin_mes)).select_related(
+    print(f"Consultando turnos entre {inicio_primera_semana} y {fin_ultima_semana}")
+    turnos = Turno.objects.filter(fecha__range=(inicio_primera_semana, fin_ultima_semana)).select_related(
         'franja_horaria', 'sitio', 'capitan'
     ).prefetch_related(
         Prefetch('asistentes')
     )
-    print(f"Turnos encontrados: {turnos}")
-
     # Organizar los turnos por semana, sitio y franja horaria
     datos_semanales = []
     for inicio, fin, dias_semana in semanas:
@@ -464,21 +465,15 @@ def turnos_por_semana(request, year, month):
             for franja in FranjaHoraria.objects.all():
                 dias = {}
                 for dia, fecha_dia in enumerate(dias_semana):  # Incluye las fechas exactas
-                    if fecha_dia > fin_mes or fecha_dia < inicio_mes:
-                        dias[dia] = {
-                            'turnos': [],  # Día fuera del rango del mes
-                            'fecha': fecha_dia  # Fecha del día
-                        }
-                    else:
-                        turnos_dia = turnos_semana.filter(
-                            sitio=sitio,
-                            franja_horaria=franja,
-                            fecha=fecha_dia
-                        )
-                        dias[dia] = {
-                            'turnos': turnos_dia,  # Los turnos del día
-                            'fecha': fecha_dia  # Fecha del día
-                        }
+                    turnos_dia = turnos_semana.filter(
+                        sitio=sitio,
+                        franja_horaria=franja,
+                        fecha=fecha_dia
+                    )
+                    dias[dia] = {
+                        'turnos': turnos_dia,  # Los turnos del día
+                        'fecha': fecha_dia  # Fecha del día
+                    }
                 franjas[franja] = dias
             sitios[sitio] = franjas
         datos_semanales.append((inicio, fin, dias_semana, sitios))
