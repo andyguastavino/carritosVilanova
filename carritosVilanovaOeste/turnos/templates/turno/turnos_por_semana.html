@@ -66,13 +66,15 @@ th {
         margin-bottom: 20px;
     }
     .create-turno {
-        background-color: #007bff;
+        background-color: #0056b3;
         color: white;
         border: none;
         padding: 5px 10px;
         text-decoration: none;
-        border-radius: 5px;
+        border-radius: 25px;
         cursor: pointer;
+        justify-content: space-around;
+        align-items: center;
     }
     .edit-turno:hover {
         background-color: purple;
@@ -81,7 +83,7 @@ th {
     }
 
     .create-turno:hover {
-        background-color: #0056b3;
+        background-color: #c9daf8;
         color: white;
         }
 
@@ -176,6 +178,16 @@ th {
     <h1>{{ month_name }} {{ year }}</h1>
     <a href="{% url 'turnos_por_semana' next_year next_month %}">{{ next_month|month_name_filter }} {{ next_year }} &raquo;</a>
 </div>
+<form action="{% url 'copiar_turnos_mes_anterior' year month %}" method="post">
+    {% csrf_token %}
+    <button type="submit" class="create-turno">Autocompletar Mes</button>
+</form>
+<form action="{% url 'eliminar_turnos_mes' year month %}" method="post" onsubmit="return confirm('¿Estás seguro de que quieres eliminar todos los turnos de este mes? Esta acción no se puede deshacer.');">
+    {% csrf_token %}
+    <button type="submit" class="delete-turno">
+        Eliminar Turnos del Mes <i class="bi bi-trash"></i>
+    </button>
+</form>
 
 {% for inicio, fin, dias_semana, sitios in datos_semanales %}
     <h2>Semana del {{ inicio|date:"d" }} al {{ fin|date:"d" }}</h2>
@@ -271,7 +283,10 @@ th {
                                         {%else%}
                                         
                                             <a href="{% url 'turno_create' %}?fecha={{ dia_info.fecha|date:'Y-m-d' }}&sitio={{ sitio.id }}&franja={{ franja.id }}&dia_semana={% if dia_info.fecha|date:'w' == '0' %}7{% else %}{{ dia_info.fecha|date:'w' }}{% endif %}">
-                                                <button class="create-turno">Crear Turno</button>
+                                                <button class="create-turno">
+                                                    Crear Turno
+                                                    <i class="bi bi-person-add"></i>
+                                                </button>
                                             </a>
                                         {% endif %}    
                                     {% endif %}

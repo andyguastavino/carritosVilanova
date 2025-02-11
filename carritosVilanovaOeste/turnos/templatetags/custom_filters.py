@@ -58,3 +58,9 @@ def generate_key(dia_id, franja_id):
 @register.filter
 def sunday_as_seven(day):
     return 7 if day == 0 else day
+@register.filter
+def to(value):
+    try:
+        return range(1, value + 1)
+    except TypeError:
+        return []

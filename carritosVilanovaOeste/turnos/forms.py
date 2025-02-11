@@ -1,6 +1,7 @@
 from django import forms
 from .models import Responsabilidad, Persona, DiaSemana, FranjaHoraria, Sitio, Turno, Disponibilidad
 
+
 # Formulario para crear o editar una Responsabilidad
 class ResponsabilidadForm(forms.ModelForm):
     class Meta:

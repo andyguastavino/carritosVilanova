@@ -7,7 +7,7 @@ from .views import (
     SitioListView, SitioDetailView, SitioCreateView, SitioUpdateView, SitioDeleteView,
     TurnoListView, TurnoDetailView, TurnoCreateView, TurnoUpdateView, TurnoDeleteView,
     DisponibilidadListView, DisponibilidadDetailView, DisponibilidadCreateView, DisponibilidadUpdateView, DisponibilidadDeleteView,
-    DibujarCalendario, horario_view, 
+    DibujarCalendario, horario_view, copiar_turnos_mes_anterior,eliminar_turnos_mes,
 )
 from . import views
 
@@ -70,5 +70,8 @@ urlpatterns = [
     
     #Ruta para gestionar disponibilidades de una persona:
     path('persona/<int:pk>/disponibilidad/', views.persona_disponibilidad, name='persona_disponibilidad'),
+    
+    path('copiar-turnos/<int:año_actual>/<int:mes_actual>/', copiar_turnos_mes_anterior, name='copiar_turnos_mes_anterior'),
+    path('eliminar-turnos/<int:año>/<int:mes>/', eliminar_turnos_mes, name='eliminar_turnos_mes'),
 
 ]

@@ -553,6 +553,84 @@ def persona_disponibilidad(request, pk):
         'disponibilidades': disponibilidades,
         'combinaciones_existentes': combinaciones_existentes,  # Pasamos el diccionario de combinaciones
     })
+    
+import calendar
+from datetime import date
+from django.shortcuts import redirect
+from django.contrib import messages
+from .models import Turno
 
+def copiar_turnos_mes_anterior(request, año_actual, mes_actual):
+    # Determinar el mes y año anterior
+    if mes_actual == 1:
+        mes_anterior = 12
+        año_anterior = año_actual - 1
+    else:
+        mes_anterior = mes_actual - 1
+        año_anterior = año_actual
 
+    # Obtener la cantidad de días de cada mes
+    num_dias_mes_anterior = calendar.monthrange(año_anterior, mes_anterior)[1]
+    num_dias_mes_actual = calendar.monthrange(año_actual, mes_actual)[1]
 
+    # Crear estructuras para mapear la posición del día en el mes
+    def obtener_semanas_del_mes(año, mes):
+        semanas = {i: [] for i in range(7)}  # 0=Lunes, ..., 6=Domingo
+        contador_semanas = {i: 0 for i in range(7)}
+
+        for dia in range(1, calendar.monthrange(año, mes)[1] + 1):
+            fecha = date(año, mes, dia)
+            dia_semana = fecha.weekday()
+            semanas[dia_semana].append((contador_semanas[dia_semana], fecha))
+            contador_semanas[dia_semana] += 1
+
+        return semanas
+
+    semanas_anterior = obtener_semanas_del_mes(año_anterior, mes_anterior)
+    semanas_actual = obtener_semanas_del_mes(año_actual, mes_actual)
+
+    # Obtener turnos del mes anterior
+    turnos_mes_anterior = Turno.objects.filter(
+        fecha__year=año_anterior,
+        fecha__month=mes_anterior
+    )
+
+    turnos_creados = 0
+
+    for turno in turnos_mes_anterior:
+        dia_semana = turno.fecha.weekday()  # 0=Lunes, 6=Domingo
+        num_semana_turno = next(
+            (num for num, fecha in semanas_anterior[dia_semana] if fecha == turno.fecha),
+            None
+        )
+
+        # Buscar la misma posición en el mes actual
+        if num_semana_turno is not None and num_semana_turno < len(semanas_actual[dia_semana]):
+            nueva_fecha = semanas_actual[dia_semana][num_semana_turno][1]
+
+            # Evitar duplicados
+            if not Turno.objects.filter(
+                fecha=nueva_fecha,
+                sitio=turno.sitio,
+                franja_horaria=turno.franja_horaria
+            ).exists():
+                # Crear el nuevo turno con los mismos datos, pero nueva fecha
+                nuevo_turno = Turno.objects.create(
+                    fecha=nueva_fecha,
+                    sitio=turno.sitio,
+                    franja_horaria=turno.franja_horaria,
+                    capitan=turno.capitan
+                )
+
+                # Copiar asistentes si hay
+                nuevo_turno.asistentes.set(turno.asistentes.all())
+                turnos_creados += 1
+
+    messages.success(request, f"Se copiaron {turnos_creados} turnos del mes anterior.")
+    return redirect('turnos_por_semana', año_actual, mes_actual)
+
+# Vista para eliminar todos los turnos de un mes en particular
+def eliminar_turnos_mes(request, año, mes):
+    Turno.objects.filter(fecha__year=año, fecha__month=mes).delete()
+    messages.success(request, f"Se eliminaron todos los turnos del mes {mes} del año {año}.")
+    return redirect('turnos_por_semana', año, mes)
